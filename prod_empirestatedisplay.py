@@ -168,7 +168,7 @@ else:
     print("Failed to retrieve data from the website.")
 
 # Load the large image
-icon_path = "/home/administrator/e-Paper/RaspberryPi_JetsonNano/python/empirestateicon.png"
+icon_path = "./empirestateicon.png"
 icon = Image.open(icon_path)
 
 # Resize the image to fit one-third of the width
