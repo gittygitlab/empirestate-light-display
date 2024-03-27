@@ -1,5 +1,6 @@
 import logging
 import requests
+import os
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageFont
@@ -8,6 +9,8 @@ from waveshare_epd import epd4in26
 # Set debug mode for WaveShare EPD
 logging.basicConfig(level=logging.DEBUG)
 
+# Show current working directory
+print("Current working directory:", os.getcwd())
 
 # Define wrap_text function
 def wrap_text(draw, text, width, font):
