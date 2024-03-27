@@ -171,7 +171,7 @@ else:
     print("Failed to retrieve data from the website.")
 
 # Load the large image
-icon_path = "./empirestateicon.png"
+icon_path = "home/administrator/empirestate/empirestate-light-display/empirestateicon.png"
 icon = Image.open(icon_path)
 
 # Resize the image to fit one-third of the width
