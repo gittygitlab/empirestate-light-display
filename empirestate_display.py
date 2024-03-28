@@ -9,12 +9,16 @@ from waveshare_epd import epd4in26
 # Set debug mode for WaveShare EPD
 logging.basicConfig(level=logging.DEBUG)
 
+#set today's date
+todays_date = datetime.now()
+
 # Manual input for today's date (for testing purposes), uncomment if required.
 #manual_input = input("Enter today's date in YYYY-MM-DD format (leave empty for current date): ").strip()
 #if manual_input:
 #    todays_date = datetime.strptime(manual_input, "%Y-%m-%d")
 #else:
-    todays_date = datetime.now()
+#    todays_date = datetime.now()
+
 
 # Define wrap_text function
 def wrap_text(draw, text, width, font):
