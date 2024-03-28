@@ -16,7 +16,7 @@ font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 font_size = 24
 font = ImageFont.truetype(font_path, font_size)
 
-message1 = "be back soon\na shutdown request was made"
+message1 = "bye bye\na shutdown request was made\n\n\nTo power on, unplug and replug the power cable.\nNote: The display may not update for 30 seconds."
 
 # Create an image with a white background
 width, height = epd.width, epd.height
