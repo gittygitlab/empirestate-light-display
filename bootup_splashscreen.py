@@ -16,7 +16,7 @@ font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 font_size = 24
 font = ImageFont.truetype(font_path, font_size)
 
-message1 = "Hello\n\nnow booting...\nestimated time: 45 seconds\n\n\nProject by Tyler Wahl (2024)\nhttps://github.com/gittygitlab/empirestate-light-display"
+message1 = "Hello\n\nNow booting...\nEstimated time: 45 seconds\n\n\n\n\nProject by: Tyler Wahl (2024)\nhttps://github.com/gittygitlab/empirestate-light-display"
 
 # Create an image with a white background
 width, height = epd.width, epd.height
