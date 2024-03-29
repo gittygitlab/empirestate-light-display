@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+import json
 import logging
 import requests
 import os
@@ -9,16 +12,21 @@ from waveshare_epd import epd4in26
 # Set debug mode for WaveShare EPD
 logging.basicConfig(level=logging.DEBUG)
 
-#set today's date
+# Set today's date
 todays_date = datetime.now()
 
-# Manual input for today's date (for testing purposes), uncomment if required.
-#manual_input = input("Enter today's date in YYYY-MM-DD format (leave empty for current date): ").strip()
-#if manual_input:
-#    todays_date = datetime.strptime(manual_input, "%Y-%m-%d")
-#else:
-#    todays_date = datetime.now()
+# Function to export event details to a file
+def export_event_details(event_details, file_path="event_details.json"):
+    with open(file_path, "w") as file:
+        json.dump(event_details, file)
 
+# Function to load event details from a file
+def load_event_details(file_path="event_details.json"):
+    try:
+        with open(file_path, "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return None
 
 # Define wrap_text function
 def wrap_text(draw, text, width, font):
@@ -87,6 +95,14 @@ try:
             print("Date:", date_text)
             print("Lights:", lights_text)
             print("Event Description:", event_description_text)
+
+            # Export event details to a file
+            event_details = {
+                "date": todays_date.strftime("%Y-%m-%d"),
+                "lights": lights,
+                "event_description": event_description
+            }
+            export_event_details(event_details, "/home/administrator/empirestate/empirestate-light-display/event_details.json")
 
             # Load the background image for days with an event
             background_image_path = "/home/administrator/empirestate/empirestate-light-display/empirestatespire.png"
