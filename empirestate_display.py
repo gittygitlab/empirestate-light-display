@@ -4,6 +4,7 @@ import json
 import logging
 import requests
 import os
+import time
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageFont
@@ -76,6 +77,10 @@ try:
 
         # Find the event info for today
         event_info = soup.find('div', class_='day--day', string=todays_date.strftime("%d"))
+
+        # Clear the display and wait 5 seconds
+        epd.Clear()
+        time.sleep(5)
 
         if event_info:
             # If there is an event today, print the details
