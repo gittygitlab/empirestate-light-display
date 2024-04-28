@@ -35,9 +35,9 @@ draw.multiline_text((x, y), message1, font=font, fill=0, align="center")
 logging.info("Displaying splash screen")
 epd.display(epd.getbuffer(image))
 
-# Wait for display to finish updating
-time.sleep(10)
-
 # Sleep
 logging.info("Powering off the display")
 epd.sleep()
+
+# Wait for display to finish updating
+time.sleep(10)
