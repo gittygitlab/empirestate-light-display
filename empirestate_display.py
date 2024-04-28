@@ -5,6 +5,7 @@ import logging
 import requests
 import os
 import time
+import subprocess
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageFont
@@ -13,7 +14,17 @@ from waveshare_epd import epd4in26
 # Set debug mode for WaveShare EPD
 logging.basicConfig(level=logging.DEBUG)
 
-# Set today's date
+# Function: Sync system time with NTP servers
+def sync_ntp_time():
+    try:
+        subprocess.run(["sudo", "ntpdate", "-s", "time.nist.gov"])
+        print("System time synchronized with NTP servers.")
+    except Exception as e:
+        print("Error synchronizing system time:", e)
+
+# Call the sync_ntp_time function and set today's date
+sync_ntp_time()
+time.sleep(5)
 todays_date = datetime.now()
 
 # Function to export event details to a file
