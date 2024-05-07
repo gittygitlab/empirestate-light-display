@@ -137,22 +137,34 @@ try:
             date_text_width, date_text_height = draw.textsize(date_text, font=font)
 
             # Draw today's date on the upper left corner
-            draw.text((10, 10), date_text, font=font, fill=0)
+            draw.text((10, 10), date_text, font=bold_font, fill=0)
 
             # Draw underline below today's date
             underline_y = 10 + date_text_height
             draw.line((10, underline_y, 10 + date_text_width, underline_y), fill=0, width=2)
 
-            # Draw lights and description text
+            # Draw other text
             y_position = underline_y + 10
-            for line in wrap_text(draw, "Lights: " + lights, width * 2 // 3, font):
-                draw.text((10, y_position), line, font=bold_font, fill=0)  # Make "Lights:" bold
-                y_position += bold_font.getsize(line)[1]
+            
+            # Draw "Lights:" in bold
+            draw.text((10, y_position), "Lights: ", font=bold_font, fill=0)
+            y_position += bold_font.getsize("Lights: ")[1]
+            
+            for line in wrap_text(draw, lights, width * 2 // 3, font):
+                draw.text((10, y_position), line, font=font, fill=0)  # Use regular font for lights
+                y_position += font.getsize(line)[1]
+            
             # Add a little space after the "Lights" row
             y_position += 10
-            for line in wrap_text(draw, "Description: " + event_description, width * 2 // 3, font):
-                draw.text((10, y_position), line, font=bold_font, fill=0)  # Make "Description:" bold
+            
+            # Draw "Description:" in bold
+            draw.text((10, y_position), "Description: ", font=bold_font, fill=0)
+            y_position += bold_font.getsize("Description: ")[1]
+            
+            for line in wrap_text(draw, event_description, width * 2 // 3, font):
+                draw.text((10, y_position), line, font=font, fill=0)  # Use regular font for description
                 y_position += font.getsize(line)[1]
+
 
             # Display the final image
             logging.info("Displaying image on display")
