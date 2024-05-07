@@ -149,10 +149,13 @@ try:
             # Draw "Lights:" in bold
             draw.text((10, y_position), "Lights: ", font=bold_font, fill=0)
             lights_text_width, lights_text_height = bold_font.getsize("Lights: ")
-            lights_start_x = 10 + lights_text_width
             
             # Draw lights text
-            for line in wrap_text(draw, lights, width * 2 // 3 - lights_text_width, font):
+            lights_start_x = 10 + lights_text_width
+            lights_wrap_width = width - lights_start_x
+            lights_lines = wrap_text(draw, lights, lights_wrap_width, font)
+            
+            for line in lights_lines:
                 draw.text((lights_start_x, y_position), line, font=font, fill=0)  # Use regular font for lights
                 y_position += font.getsize(line)[1]
             
@@ -162,12 +165,16 @@ try:
             # Draw "Description:" in bold
             draw.text((10, y_position), "Description: ", font=bold_font, fill=0)
             description_text_width, description_text_height = bold_font.getsize("Description: ")
-            description_start_x = 10 + description_text_width
             
             # Draw event description text
-            for line in wrap_text(draw, event_description, width * 2 // 3 - description_text_width, font):
+            description_start_x = 10 + description_text_width
+            description_wrap_width = width - description_start_x
+            description_lines = wrap_text(draw, event_description, description_wrap_width, font)
+            
+            for line in description_lines:
                 draw.text((description_start_x, y_position), line, font=font, fill=0)  # Use regular font for description
                 y_position += font.getsize(line)[1]
+
 
             # Display the final image
             logging.info("Displaying image on display")
