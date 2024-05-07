@@ -198,7 +198,7 @@ try:
             event_description_wrap_width = (width * 7 // 10) - event_description_title_width  # Adjust wrap width
 
             # Calculate starting y-position for event description text
-            event_description_start_y = y_position
+            #event_description_start_y = y_position
 
             # Calculate starting x-position for event description text
             event_description_start_x = 20 + event_description_title_width
@@ -265,10 +265,28 @@ try:
     epd.sleep()
 
 except Exception as e:
-    print('Error: ', e)
+    error_message = "An error has occurred. Please power-cycle the device.\nSystem will attempt an auto repair overnight.\n"
+    error_reason = f"Error: {e}"
+    print(error_reason)
+    print(error_message)
+    logging.error(error_reason)
+
     try:
-        # In case of an error, put the display to sleep
+        # Display error message on the e-ink display
+        error_image = Image.new("1", (width, height), 255)  # 255: clear the frame
+        draw = ImageDraw.Draw(error_image)
+        error_font_size = 24
+        bold_font = ImageFont.truetype(bold_font_path, error_font_size)
+        message_width, message_height = draw.textsize(error_message, font=bold_font)
+        reason_width, reason_height = draw.textsize(error_reason, font=bold_font)
+        draw.text(((width - message_width) // 2, (height - message_height) // 2 - 20), error_message, font=bold_font, fill=0)
+        draw.text(((width - reason_width) // 2, (height - reason_height) // 2 + 20), error_reason, font=bold_font, fill=0)
+        epd.display(epd.getbuffer(error_image))
+        # Sleep for a while before putting the display to sleep
+        time.sleep(5)
+    except:
+        pass  # Ignore any errors that occur during error message display
+    finally:
+        # Put the display to sleep
         logging.info("Powering off the display due to error")
         epd.sleep()
-    except:
-        pass  # Ignore any errors that occur during sleep
