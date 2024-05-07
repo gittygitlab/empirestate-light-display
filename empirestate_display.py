@@ -148,7 +148,7 @@ try:
                 draw.text((10, y_position), line, font=font, fill=0)
                 y_position += font.getsize(line)[1]
             # Add a little space after the "Lights" row
-            y_position += 5
+            y_position += 10
             for line in wrap_text(draw, event_description_text, width * 2 // 3, font):
                 draw.text((10, y_position), line, font=font, fill=0)
                 y_position += font.getsize(line)[1]
