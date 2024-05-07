@@ -171,17 +171,16 @@ try:
             description_wrap_width = (width * 2 // 3) - description_start_x  # Adjust wrap width
             description_lines = wrap_text(draw, event_description, description_wrap_width, font)
             
-            max_description_width = max([font.getsize(line)[0] for line in description_lines])  # Calculate maximum line width
+            # Calculate maximum width among all description lines
+            max_description_width = max(font.getsize(line)[0] for line in description_lines)
             
             for line in description_lines:
-                draw.text((description_start_x, y_position), line, font=font, fill=0)  # Use regular font for description
-                y_position += font.getsize(line)[1]
-                
-                # Adjust the starting position for the next line if it wraps
-                if font.getsize(line)[0] < max_description_width:
-                    description_start_x = 10 + description_text_width
+                line_width = font.getsize(line)[0]
+                if line_width < max_description_width:
+                    draw.text((description_start_x, y_position), line, font=font, fill=0)
                 else:
-                    description_start_x = 10
+                    draw.text((10, y_position), line, font=font, fill=0)
+                y_position += font.getsize(line)[1]
 
             # Display the final image
             logging.info("Displaying image on display")
