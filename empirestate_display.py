@@ -25,7 +25,7 @@ def sync_ntp_time():
 # Function to manually set the date for testing
 def set_test_date():
     # Uncomment the line below and set the desired test date (YYYY, MM, DD) for testing
-    # return datetime(year=2024, month=4, day=13)
+    #return datetime(year=2024, month=2, day=18)
     return None  # Comment out this line if you set a test date above
 
 # Call the set_test_date function to manually set the test date
@@ -198,7 +198,7 @@ try:
             y_position += event_description_title_height
 
             # Calculate wrap width for event description text
-            event_description_wrap_width = (width * 7 // 10)
+            event_description_wrap_width = (width * 7 // 10) 
 
             # Calculate starting y-position for event description text
             event_description_start_y = y_position
@@ -206,19 +206,23 @@ try:
             # Calculate starting x-position for event description text
             event_description_start_x = 20
 
-            # Draw event description text
+            # Draw event description text with the current font size
             event_description_lines = wrap_text(draw, event_description, event_description_wrap_width, font)
 
-            # Draw the first line of event description text
-            draw.text((event_description_start_x, event_description_start_y), event_description_lines[0], font=font, fill=0)
-            event_description_start_y += font.getsize(event_description_lines[0])[1]
+            # Calculate the number of lines the text wraps into
+            num_lines = len(event_description_lines)
 
-            # Draw subsequent lines of event description text, wrapping to the left 70% of the screen
-            for line in event_description_lines[1:]:
-                # Calculate wrap width for subsequent lines to fill 70% of the screen
-                event_description_wrap_width = (width * 7 // 10)  # Adjust wrap width                
-                # Draw each subsequent line starting from the left side of the display
-                draw.text((20, event_description_start_y), line, font=font, fill=0)
+            # Adjust font size if the text wraps into more than 4 lines
+            if num_lines > 4:
+                # Calculate the new font size based on the number of lines
+                font_size = max(16, min(32, int(font_size * (4 / num_lines))))  # Limit font size between 16 and 32
+                font = ImageFont.truetype(font_path, font_size)
+                # Recalculate text dimensions with the new font size
+                event_description_lines = wrap_text(draw, event_description, event_description_wrap_width, font)
+
+            # Draw the event description text with the adjusted font size
+            for line in event_description_lines:
+                draw.text((event_description_start_x, event_description_start_y), line, font=font, fill=0)
                 event_description_start_y += font.getsize(line)[1]
 
             # Display the final image
