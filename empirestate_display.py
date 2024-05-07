@@ -90,7 +90,7 @@ try:
     draw = ImageDraw.Draw(image)
 
     # URL of the Empire State Building tower lights calendar
-    url = "https://www.esbnyc.com/about/tower-lights/calendar/202404"
+    url = "https://www.esbnyc.com/about/tower-lights/calendar"
 
     # Send a GET request to the URL
     response = requests.get(url)
