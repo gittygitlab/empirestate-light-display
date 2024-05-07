@@ -66,8 +66,8 @@ try:
     # Define font
     font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Regular.otf"
     bold_font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Bold.otf"
-    font_size = 36
-    bold_font_size = 36
+    font_size = 34
+    bold_font_size = 34
     font = ImageFont.truetype(font_path, font_size)
     bold_font = ImageFont.truetype(bold_font_path, bold_font_size)
 
@@ -145,13 +145,13 @@ try:
 
             # Draw lights and description text
             y_position = underline_y + 10
-            for line in wrap_text(draw, lights_text, width * 2 // 3, font):
-                draw.text((10, y_position), line, font=font, fill=0)
-                y_position += font.getsize(line)[1]
+            for line in wrap_text(draw, "Lights: " + lights, width * 2 // 3, font):
+                draw.text((10, y_position), line, font=bold_font, fill=0)  # Make "Lights:" bold
+                y_position += bold_font.getsize(line)[1]
             # Add a little space after the "Lights" row
             y_position += 10
-            for line in wrap_text(draw, event_description_text, width * 2 // 3, font):
-                draw.text((10, y_position), line, font=font, fill=0)
+            for line in wrap_text(draw, "Description: " + event_description, width * 2 // 3, font):
+                draw.text((10, y_position), line, font=bold_font, fill=0)  # Make "Description:" bold
                 y_position += font.getsize(line)[1]
 
             # Display the final image
