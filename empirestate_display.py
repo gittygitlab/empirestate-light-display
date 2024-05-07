@@ -194,6 +194,9 @@ try:
             draw.text((20, y_position), event_description_title, font=bold_font, fill=0)
             event_description_title_width, event_description_title_height = bold_font.getsize(event_description_title)
 
+            # Adjust y_position for event description text
+            y_position += event_description_title_height
+
             # Calculate wrap width for event description text
             event_description_wrap_width = (width * 7 // 10) - event_description_title_width  # Adjust wrap width
 
