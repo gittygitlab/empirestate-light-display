@@ -25,7 +25,7 @@ def sync_ntp_time():
 # Function to manually set the date for testing
 def set_test_date():
     # Uncomment the line below and set the desired test date (YYYY, MM, DD) for testing
-    # return datetime(year=2024, month=5, day=2)
+    # return datetime(year=2024, month=4, day=13)
     return None  # Comment out this line if you set a test date above
 
 # Call the set_test_date function to manually set the test date
@@ -90,7 +90,7 @@ try:
     draw = ImageDraw.Draw(image)
 
     # URL of the Empire State Building tower lights calendar
-    url = "https://www.esbnyc.com/about/tower-lights/calendar"
+    url = "https://www.esbnyc.com/about/tower-lights/calendar/202404"
 
     # Send a GET request to the URL
     response = requests.get(url)
@@ -150,46 +150,73 @@ try:
             date_text_width, date_text_height = draw.textsize(date_text, font=font)
 
             # Draw today's date on the upper left corner
-            draw.text((10, 10), date_text, font=bold_font, fill=0)
+            draw.text((20, 20), date_text, font=bold_font, fill=0)
 
             # Draw underline below today's date
-            underline_y = 10 + date_text_height
-            draw.line((10, underline_y, 10 + date_text_width, underline_y), fill=0, width=2)
+            underline_y = 20 + date_text_height
+            draw.line((20, underline_y, 20 + date_text_width, underline_y), fill=0, width=2)
 
             # Draw other text
             y_position = underline_y + 10
-            
+
             # Draw "Lights:" in bold
-            draw.text((10, y_position), "Lights: ", font=bold_font, fill=0)
-            lights_text_width, lights_text_height = bold_font.getsize("Lights: ")
-            
+            lights_title = "Lights: "
+            draw.text((20, y_position), lights_title, font=bold_font, fill=0)
+            lights_text_width, lights_text_height = bold_font.getsize(lights_title)
+
+            # Calculate wrap width for lights text
+            lights_wrap_width = (width * 7 // 10) - lights_text_width  # Adjust wrap width
+
+            # Calculate starting y-position for lights text
+            lights_start_y = y_position
+
+            # Calculate starting x-position for lights text
+            lights_start_x = 20 + lights_text_width
+
             # Draw lights text
-            lights_start_x = 10 + lights_text_width
-            lights_wrap_width = (width * 2 // 3) - lights_start_x  # Adjust wrap width
             lights_lines = wrap_text(draw, lights, lights_wrap_width, font)
-            
-            for line in lights_lines:
-                draw.text((lights_start_x, y_position), line, font=font, fill=0)  # Use regular font for lights
-                y_position += font.getsize(line)[1]
-            
+
+            # Draw the first line of lights text
+            draw.text((lights_start_x, lights_start_y), lights_lines[0], font=font, fill=0)
+            lights_start_y += font.getsize(lights_lines[0])[1]
+
+            # Draw subsequent lines of lights text, wrapping to the left 70% of the screen
+            for line in lights_lines[1:]:
+                # Draw each subsequent line starting from the leftmost position
+                draw.text((20, lights_start_y), line, font=font, fill=0)
+                lights_start_y += font.getsize(line)[1]
+
             # Add a little space after the "Lights" row
-            y_position += 10
-            
+            y_position = max(y_position + lights_text_height, lights_start_y) + 10
+
             # Draw "Description:" in bold
-            draw.text((10, y_position), "Description: ", font=bold_font, fill=0)
-            
-            # Draw event description text on a new line
-            y_position += bold_font.getsize("Description: ")[1]
-            
-            # Calculate wrap width for description text
-            description_wrap_width = (width * 2 // 3)
-            
+            event_description_title = "Description: "
+            draw.text((20, y_position), event_description_title, font=bold_font, fill=0)
+            event_description_title_width, event_description_title_height = bold_font.getsize(event_description_title)
+
+            # Calculate wrap width for event description text
+            event_description_wrap_width = (width * 7 // 10) - event_description_title_width  # Adjust wrap width
+
+            # Calculate starting y-position for event description text
+            event_description_start_y = y_position
+
+            # Calculate starting x-position for event description text
+            event_description_start_x = 20 + event_description_title_width
+
             # Draw event description text
-            description_lines = wrap_text(draw, event_description, description_wrap_width, font)
-            
-            for line in description_lines:
-                draw.text((10, y_position), line, font=font, fill=0)  # Use regular font for description
-                y_position += font.getsize(line)[1]
+            event_description_lines = wrap_text(draw, event_description, event_description_wrap_width, font)
+
+            # Draw the first line of event description text
+            draw.text((event_description_start_x, event_description_start_y), event_description_lines[0], font=font, fill=0)
+            event_description_start_y += font.getsize(event_description_lines[0])[1]
+
+            # Draw subsequent lines of event description text, wrapping to the left 70% of the screen
+            for line in event_description_lines[1:]:
+                # Calculate wrap width for subsequent lines to fill 70% of the screen
+                event_description_wrap_width = (width * 7 // 10)  # Adjust wrap width                
+                # Draw each subsequent line starting from the left side of the display
+                draw.text((20, event_description_start_y), line, font=font, fill=0)
+                event_description_start_y += font.getsize(line)[1]
 
             # Display the final image
             logging.info("Displaying image on display")
