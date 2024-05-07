@@ -8,11 +8,18 @@ LOCAL_REPO_PATH = "/home/administrator/empirestate/empirestate-light-display"
 SCRIPT_PATH = "/home/administrator/empirestate/empirestate-light-display/empirestate_display.py"
 
 def update_repo():
-    if os.path.exists(LOCAL_REPO_PATH):
+    os.chdir(LOCAL_REPO_PATH)  # Change current working directory to repository directory
+    if os.path.exists(".git"):
         repo = git.Repo(LOCAL_REPO_PATH)
-        repo.remotes.origin.pull()
-        # Force checkout to overwrite local changes
-        repo.git.checkout("--", ".")
+        try:
+            repo.remotes.origin.pull()
+        except git.exc.GitCommandError as e:
+            if "Your local changes to the following files would be overwritten by merge" in str(e):
+                # Discard local changes and overwrite
+                subprocess.run(["git", "reset", "--hard", "HEAD"])
+                repo.remotes.origin.pull()
+            else:
+                raise e
     else:
         git.Repo.clone_from(REPO_URL, LOCAL_REPO_PATH)
 
