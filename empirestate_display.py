@@ -198,7 +198,7 @@ try:
             event_description_wrap_width = (width * 7 // 10) - event_description_title_width  # Adjust wrap width
 
             # Calculate starting y-position for event description text
-            #event_description_start_y = y_position
+            event_description_start_y = y_position
 
             # Calculate starting x-position for event description text
             event_description_start_x = 20 + event_description_title_width
