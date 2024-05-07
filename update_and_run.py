@@ -11,6 +11,8 @@ def update_repo():
     if os.path.exists(LOCAL_REPO_PATH):
         repo = git.Repo(LOCAL_REPO_PATH)
         repo.remotes.origin.pull()
+        # Force checkout to overwrite local changes
+        repo.git.checkout("--", ".")
     else:
         git.Repo.clone_from(REPO_URL, LOCAL_REPO_PATH)
 
