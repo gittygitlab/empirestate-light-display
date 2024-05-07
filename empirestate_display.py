@@ -22,10 +22,23 @@ def sync_ntp_time():
     except Exception as e:
         print("Error synchronizing system time:", e)
 
-# Call the sync_ntp_time function and set today's date
-sync_ntp_time()
-time.sleep(5)
-todays_date = datetime.now()
+# Function to manually set the date for testing
+def set_test_date():
+    # Uncomment the line below and set the desired test date (YYYY, MM, DD) for testing
+    return datetime(year=2024, month=4, day=11)
+    # return None  # Comment out this line if you set a test date above
+
+# Call the set_test_date function to manually set the test date
+test_date = set_test_date()
+
+# If test date is set, use it for testing
+if test_date:
+    todays_date = test_date
+else:
+    # If test date is not set, sync system time with NTP servers and set today's date
+    sync_ntp_time()
+    time.sleep(5)
+    todays_date = datetime.now()
 
 # Function to export event details to a file
 def export_event_details(event_details, file_path="event_details.json"):
