@@ -142,11 +142,13 @@ try:
             underline_y = 10 + date_text_height
             draw.line((10, underline_y, 10 + date_text_width, underline_y), fill=0, width=2)
 
-            # Draw other text
+            # Draw lights and description text
             y_position = underline_y + 10
             for line in wrap_text(draw, lights_text, width * 2 // 3, font):
                 draw.text((10, y_position), line, font=font, fill=0)
                 y_position += font.getsize(line)[1]
+            # Add a little space after the "Lights" row
+            y_position += 5
             for line in wrap_text(draw, event_description_text, width * 2 // 3, font):
                 draw.text((10, y_position), line, font=font, fill=0)
                 y_position += font.getsize(line)[1]
