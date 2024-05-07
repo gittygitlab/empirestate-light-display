@@ -164,22 +164,18 @@ try:
             
             # Draw "Description:" in bold
             draw.text((10, y_position), "Description: ", font=bold_font, fill=0)
-            description_text_width, description_text_height = bold_font.getsize("Description: ")
+            
+            # Draw event description text on a new line
+            y_position += bold_font.getsize("Description: ")[1]
+            
+            # Calculate wrap width for description text
+            description_wrap_width = (width * 2 // 3)
             
             # Draw event description text
-            description_start_x = 10 + description_text_width
-            description_wrap_width = (width * 2 // 3) - description_start_x  # Adjust wrap width
             description_lines = wrap_text(draw, event_description, description_wrap_width, font)
             
-            # Calculate maximum width among all description lines
-            max_description_width = max(font.getsize(line)[0] for line in description_lines)
-            
             for line in description_lines:
-                line_width = font.getsize(line)[0]
-                if line_width < max_description_width:
-                    draw.text((description_start_x, y_position), line, font=font, fill=0)
-                else:
-                    draw.text((10, y_position), line, font=font, fill=0)
+                draw.text((10, y_position), line, font=font, fill=0)  # Use regular font for description
                 y_position += font.getsize(line)[1]
 
             # Display the final image
