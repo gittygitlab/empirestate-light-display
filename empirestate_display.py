@@ -66,8 +66,8 @@ try:
     # Define font
     font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Regular.otf"
     bold_font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Bold.otf"
-    font_size = 34
-    bold_font_size = 34
+    font_size = 32
+    bold_font_size = 32
     font = ImageFont.truetype(font_path, font_size)
     bold_font = ImageFont.truetype(bold_font_path, bold_font_size)
 
@@ -148,10 +148,12 @@ try:
             
             # Draw "Lights:" in bold
             draw.text((10, y_position), "Lights: ", font=bold_font, fill=0)
-            y_position += bold_font.getsize("Lights: ")[1]
+            lights_text_width, lights_text_height = bold_font.getsize("Lights: ")
+            lights_start_x = 10 + lights_text_width
             
-            for line in wrap_text(draw, lights, width * 2 // 3, font):
-                draw.text((10, y_position), line, font=font, fill=0)  # Use regular font for lights
+            # Draw lights text
+            for line in wrap_text(draw, lights, width * 2 // 3 - lights_text_width, font):
+                draw.text((lights_start_x, y_position), line, font=font, fill=0)  # Use regular font for lights
                 y_position += font.getsize(line)[1]
             
             # Add a little space after the "Lights" row
@@ -159,12 +161,13 @@ try:
             
             # Draw "Description:" in bold
             draw.text((10, y_position), "Description: ", font=bold_font, fill=0)
-            y_position += bold_font.getsize("Description: ")[1]
+            description_text_width, description_text_height = bold_font.getsize("Description: ")
+            description_start_x = 10 + description_text_width
             
-            for line in wrap_text(draw, event_description, width * 2 // 3, font):
-                draw.text((10, y_position), line, font=font, fill=0)  # Use regular font for description
+            # Draw event description text
+            for line in wrap_text(draw, event_description, width * 2 // 3 - description_text_width, font):
+                draw.text((description_start_x, y_position), line, font=font, fill=0)  # Use regular font for description
                 y_position += font.getsize(line)[1]
-
 
             # Display the final image
             logging.info("Displaying image on display")
