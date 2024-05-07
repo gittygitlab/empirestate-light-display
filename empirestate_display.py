@@ -64,9 +64,9 @@ try:
     epd.init()
 
     # Define font
-    font_path = "/usr/share/fonts/opentype/cantarell/Cantarell.otf"
+    font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Regular.otf"
     bold_font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Bold.otf"
-    font_size = 32
+    font_size = 36
     bold_font_size = 36
     font = ImageFont.truetype(font_path, font_size)
     bold_font = ImageFont.truetype(bold_font_path, bold_font_size)
