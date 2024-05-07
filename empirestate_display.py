@@ -215,16 +215,16 @@ try:
             date_text_width, date_text_height = draw.textsize(date_text, font=font)
 
             # Draw today's date on the upper left corner
-            draw.text((width - date_text_width - 10, 10), date_text, font=font, fill=0)
+            draw.text((width - date_text_width - 30, 10), date_text, font=bold_font, fill=0)
 
             # Draw underline below today's date
             underline_y = 10 + date_text_height
-            draw.line((width - date_text_width - 10, underline_y, width - 10, underline_y), fill=0, width=2)
+            draw.line((width - date_text_width - 30, underline_y, width - 30, underline_y), fill=0, width=2)
 
             # Draw "No events today" text below today's date
             no_events_text = "No events today"
             text_width, text_height = draw.textsize(no_events_text, font=font)
-            draw.text((width - text_width - 10, underline_y + 10), no_events_text, font=font, fill=0)
+            draw.text((width - text_width - 30, underline_y + 10), no_events_text, font=font, fill=0)
 
             # Display the final image
             logging.info("Displaying image on display")
