@@ -266,3 +266,9 @@ try:
 
 except Exception as e:
     print('Error: ', e)
+    try:
+        # In case of an error, put the display to sleep
+        logging.info("Powering off the display due to error")
+        epd.sleep()
+    except:
+        pass  # Ignore any errors that occur during sleep
