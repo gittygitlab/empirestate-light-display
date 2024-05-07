@@ -198,13 +198,13 @@ try:
             y_position += event_description_title_height
 
             # Calculate wrap width for event description text
-            event_description_wrap_width = (width * 7 // 10) - event_description_title_width  # Adjust wrap width
+            event_description_wrap_width = (width * 7 // 10)
 
             # Calculate starting y-position for event description text
             event_description_start_y = y_position
 
             # Calculate starting x-position for event description text
-            event_description_start_x = 20 + event_description_title_width
+            event_description_start_x = 20
 
             # Draw event description text
             event_description_lines = wrap_text(draw, event_description, event_description_wrap_width, font)
