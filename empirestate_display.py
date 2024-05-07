@@ -152,7 +152,7 @@ try:
             
             # Draw lights text
             lights_start_x = 10 + lights_text_width
-            lights_wrap_width = width - lights_start_x
+            lights_wrap_width = (width * 2 // 3) - lights_start_x  # Adjust wrap width
             lights_lines = wrap_text(draw, lights, lights_wrap_width, font)
             
             for line in lights_lines:
@@ -168,7 +168,7 @@ try:
             
             # Draw event description text
             description_start_x = 10 + description_text_width
-            description_wrap_width = width - description_start_x
+            description_wrap_width = (width * 2 // 3) - description_start_x  # Adjust wrap width
             description_lines = wrap_text(draw, event_description, description_wrap_width, font)
             
             for line in description_lines:
