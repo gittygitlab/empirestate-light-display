@@ -25,7 +25,7 @@ def sync_ntp_time():
 # Function to manually set the date for testing
 def set_test_date():
     # Uncomment the line below and set the desired test date (YYYY, MM, DD) for testing
-    return datetime(year=2024, month=4, day=11)
+    return datetime(year=2024, month=5, day=2)
     # return None  # Comment out this line if you set a test date above
 
 # Call the set_test_date function to manually set the test date
