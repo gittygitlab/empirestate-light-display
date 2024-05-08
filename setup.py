@@ -28,11 +28,22 @@ def setup_cron_jobs():
     from crontab import CronTab
     
     cron = CronTab(user=True)
-    # Add a cron job to reboot the system every Monday at 2 am
-    reboot_job = cron.new(command='sudo reboot', comment='Reboot system every Monday at 2 am')
+    # Add a cron job to reboot the system at 3 am every Monday
+    reboot_job = cron.new(command='sudo reboot', comment='Reboot system at 3 am every Monday')
     reboot_job.dow.on('MON')
-    reboot_job.hour.on(2)
+    reboot_job.hour.on(3)
     reboot_job.minute.on(0)
+    
+    # Add a cron job to run /home/administrator/empirestate/update_and_run.py at 4 am every morning
+    update_and_run_job = cron.new(command='python3 /home/administrator/empirestate/update_and_run.py', comment='Run update_and_run.py at 4 am every morning')
+    update_and_run_job.hour.on(4)
+    update_and_run_job.minute.on(0)
+    
+    # Add cron jobs to run /home/administrator/check_website.py every hour from 7 am to 11 pm every day
+    for hour in range(7, 24):
+        check_website_job = cron.new(command='python3 /home/administrator/check_website.py', comment=f'Run check_website.py every hour from 7am until 11pm')
+        check_website_job.hour.on(hour)
+        check_website_job.minute.on(0)
     
     cron.write()
 
@@ -46,6 +57,28 @@ def setup_automatic_updates():
         # Disable automatic reboot after updates
         f.write('Unattended-Upgrade::Automatic-Reboot "false";\n')
 
+def setup_shutdown_service():
+    # Create the service unit file
+    service_unit_content = """
+[Unit]
+Description=Run shutdown_splashscreen.py on shutdown
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+ExecStop=/usr/bin/python3 /home/administrator/empirestate/shutdown_splashscreen.py
+
+[Install]
+WantedBy=halt.target reboot.target shutdown.target
+"""
+    with open('/etc/systemd/system/shutdown_splashscreen.service', 'w') as f:
+        f.write(service_unit_content)
+    
+    # Enable the service
+    subprocess.run(["sudo", "systemctl", "enable", "shutdown_splashscreen.service"])
+
 def main():
     system_update()
     install_python_packages()
@@ -53,6 +86,7 @@ def main():
     install_crontab_module()
     setup_cron_jobs()
     setup_automatic_updates()
+    setup_shutdown_service()
 
 if __name__ == "__main__":
     main()
