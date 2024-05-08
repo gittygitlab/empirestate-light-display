@@ -1,5 +1,3 @@
-## Setup script to run on new raspbian install. ##
-
 import subprocess
 from crontab import CronTab
 
@@ -7,11 +5,11 @@ def install_python_packages():
     # Install Python 3 packages
     subprocess.run(["sudo", "apt-get", "update"])
     subprocess.run(["sudo", "apt-get", "install", "python3-pip", "python3-pil", "python3-numpy", "-y"])
-    subprocess.run(["sudo", "pip3", "install", "spidev"])
+    subprocess.run(["sudo", "pip3", "install", "spidev", "GitPython"])
 
     # Install Python 2 packages
     subprocess.run(["sudo", "apt-get", "install", "python-pip", "python-pil", "python-numpy", "-y"])
-    subprocess.run(["sudo", "pip", "install", "spidev"])
+    subprocess.run(["sudo", "pip", "install", "spidev", "GitPython"])
 
 def install_gpiozero():
     # Install gpiozero library for Python 3
@@ -31,7 +29,12 @@ def setup_cron_jobs():
     reboot_job.dow.on('MON')
     reboot_job.hour.on(2)
     reboot_job.minute.on(0)
-       
+    
+    # Add a cron job to run your script every day
+    script_job = cron.new(command='/path/to/your/script.py', comment='Run your script every day')
+    script_job.minute.on(0)
+    script_job.hour.on(0)
+    
     cron.write()
 
 def setup_automatic_updates():
