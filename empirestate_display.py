@@ -11,6 +11,17 @@ from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageFont
 from waveshare_epd import epd4in26
 
+## Define Variables
+# Define font paths
+font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Bold.otf"
+bold_font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Bold.otf"
+# Define font sizes
+font_size = 32
+bold_font_size = 32
+# URL of the Empire State Building tower lights calendar
+url = "https://www.esbnyc.com/about/tower-lights/calendar"
+
+
 # Set debug mode for WaveShare EPD
 logging.basicConfig(level=logging.DEBUG)
 
@@ -25,7 +36,7 @@ def sync_ntp_time():
 # Function to manually set the date for testing
 def set_test_date():
     # Uncomment the line below and set the desired test date (YYYY, MM, DD) for testing
-    #return datetime(year=2024, month=2, day=18)
+    #return datetime(year=2024, month=4, day=12)
     return None  # Comment out this line if you set a test date above
 
 # Call the set_test_date function to manually set the test date
@@ -77,10 +88,6 @@ try:
     epd.init()
 
     # Define font
-    font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Regular.otf"
-    bold_font_path = "/usr/share/fonts/opentype/cantarell/Cantarell-Bold.otf"
-    font_size = 32
-    bold_font_size = 32
     font = ImageFont.truetype(font_path, font_size)
     bold_font = ImageFont.truetype(bold_font_path, bold_font_size)
 
@@ -88,9 +95,6 @@ try:
     width, height = epd.width, epd.height
     image = Image.new("1", (width, height), 255)  # 255: clear the frame
     draw = ImageDraw.Draw(image)
-
-    # URL of the Empire State Building tower lights calendar
-    url = "https://www.esbnyc.com/about/tower-lights/calendar"
 
     # Send a GET request to the URL
     response = requests.get(url)
@@ -152,114 +156,61 @@ try:
             # Draw today's date on the upper left corner
             draw.text((20, 20), date_text, font=bold_font, fill=0)
 
-            # Draw underline below today's date
-            underline_y = 20 + date_text_height
+            ## Draw underline below today's date ##
+            underline_y = 20 + date_text_height - 5
             draw.line((20, underline_y, 20 + date_text_width, underline_y), fill=0, width=2)
 
-            # Draw other text
+            ## Add a blank line after the underline ##
             y_position = underline_y + 10
 
-            # Draw "Lights:" in bold
-            lights_title = "Lights: "
-            draw.text((20, y_position), lights_title, font=bold_font, fill=0)
-            lights_text_width, lights_text_height = bold_font.getsize(lights_title)
+            ## Draw a blank line ##
+            draw.text((20, y_position), "", font=font, fill=0)
+
+            ## Adjust y_position to add a blank line above the lights description ##
+            y_position += font.getsize(" ")[1] // 2
+
+            ## Combine "Lights:" title and lights description with a space ##
+            lights_text = "Lights: " + lights
 
             # Calculate wrap width for lights text
-            lights_wrap_width = (width * 7 // 10) - lights_text_width  # Adjust wrap width
+            lights_wrap_width = (width * 7 // 10)
 
-            # Calculate starting y-position for lights text
+            # Calculate starting y-position for light text
             lights_start_y = y_position
 
-            # Calculate starting x-position for lights text
-            lights_start_x = 20 + lights_text_width
+            # Calculate starting x-position for light text
+            lights_start_x = 20
 
-            # Draw lights text
-            lights_lines = wrap_text(draw, lights, lights_wrap_width, font)
+            # Draw light text with the predefined font size
+            lights_lines = wrap_text(draw, lights_text, lights_wrap_width, font)
+            max_line_height = max(font.getsize(line)[1] for line in lights_lines)  # Calculate the maximum line height
+            line_spacing = -5.0  # Adjust the line spacing as needed
+            for line in lights_lines:
+                draw.text((lights_start_x, lights_start_y), line, font=font, fill=0)
+                lights_start_y += max_line_height + line_spacing  # Use the maximum line height for consistent spacing
+            
+            ## Adjust y_position to add a blank line after the lights description ##
+            y_position = max(y_position + font.getsize(" ")[1], lights_start_y) + 10
 
-            # Draw the first line of lights text
-            draw.text((lights_start_x, lights_start_y), lights_lines[0], font=font, fill=0)
-            lights_start_y += font.getsize(lights_lines[0])[1]
+            ## Draw a blank line ##
+            draw.text((20, y_position), "", font=font, fill=0)
 
-            # Draw subsequent lines of lights text, wrapping to the left 70% of the screen
-            for line in lights_lines[1:]:
-                # Draw each subsequent line starting from the leftmost position
-                draw.text((20, lights_start_y), line, font=font, fill=0)
-                lights_start_y += font.getsize(line)[1]
+            ## Adjust y_position to add a blank line after the lights description ##
+            y_position += font.getsize(" ")[1] // 2
 
-            # Add a little space after the "Lights" row
-            y_position = max(y_position + lights_text_height, lights_start_y) + 10
-
-            # Draw "Description:" in bold
-            event_description_title = "Description: "
-            draw.text((20, y_position), event_description_title, font=bold_font, fill=0)
-            event_description_title_width, event_description_title_height = bold_font.getsize(event_description_title)
-
-            # Adjust y_position for event description text
-            y_position += event_description_title_height
+            ## Combine "Description:" title and event description ##
+            event_description_text = "Description: " + event_description
 
             # Calculate wrap width for event description text
-            event_description_wrap_width = (width * 7 // 10) 
+            event_description_wrap_width = (width * 7 // 10)  # 70% of the screen width
 
-            # Calculate starting y-position for event description text
-            event_description_start_y = y_position
-
-            # Calculate starting x-position for event description text
-            event_description_start_x = 20
-
-            # Draw event description text with the current font size
-            event_description_lines = wrap_text(draw, event_description, event_description_wrap_width, font)
-
-            # Calculate the number of lines the text wraps into
-            num_lines = len(event_description_lines)
-
-            # Adjust font size if the text wraps into more than 4 lines
-            if num_lines > 4:
-                # Calculate the new font size based on the number of lines
-                font_size = max(16, min(32, int(font_size * (4 / num_lines))))  # Limit font size between 16 and 32
-                font = ImageFont.truetype(font_path, font_size)
-                # Recalculate text dimensions with the new font size
-                event_description_lines = wrap_text(draw, event_description, event_description_wrap_width, font)
-
-            # Draw the event description text with the adjusted font size
+            # Draw event description text with the predefined font size
+            event_description_lines = wrap_text(draw, event_description_text, event_description_wrap_width, font)
+            max_line_height = max(font.getsize(line)[1] for line in event_description_lines)  # Calculate the maximum line height
             for line in event_description_lines:
-                draw.text((event_description_start_x, event_description_start_y), line, font=font, fill=0)
-                event_description_start_y += font.getsize(line)[1]
-
-            # Display the final image
-            logging.info("Displaying image on display")
-            epd.display(epd.getbuffer(final_image))
-
-        else:
-            # If there is no event today, show the new image with "No events today" message
-
-            # Load the new image
-            new_image_path = "/home/administrator/empirestate/empirestate-light-display/empirestateskyline.png"
-            new_image = Image.open(new_image_path)
-            new_image = new_image.resize((width, height), Image.ANTIALIAS)
-
-            # Create a new image to draw text over the loaded image
-            final_image = Image.new("1", (width, height), 255)  # 255: clear the frame
-            final_image.paste(new_image, (0, 0))
-
-            # Initialize draw
-            draw = ImageDraw.Draw(final_image)
-
-            # Calculate text dimensions for today's date
-            date_text = todays_date.strftime("%A, %B ") + str(todays_date.day)
-            date_text_width, date_text_height = draw.textsize(date_text, font=font)
-
-            # Draw today's date on the upper left corner
-            draw.text((width - date_text_width - 30, 10), date_text, font=bold_font, fill=0)
-
-            # Draw underline below today's date
-            underline_y = 10 + date_text_height
-            draw.line((width - date_text_width - 30, underline_y, width - 30, underline_y), fill=0, width=2)
-
-            # Draw "No events today" text below today's date
-            no_events_text = "No events today"
-            text_width, text_height = draw.textsize(no_events_text, font=font)
-            draw.text((width - text_width - 30, underline_y + 10), no_events_text, font=font, fill=0)
-
+                draw.text((20, y_position), line, font=font, fill=0)
+                y_position += max_line_height + line_spacing  # Use the maximum line height for consistent spacing
+            
             # Display the final image
             logging.info("Displaying image on display")
             epd.display(epd.getbuffer(final_image))
