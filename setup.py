@@ -1,5 +1,4 @@
 import subprocess
-from crontab import CronTab
 
 def install_python_packages():
     # Install Python 3 packages
@@ -18,22 +17,22 @@ def install_gpiozero():
     # Install gpiozero library for Python 2
     subprocess.run(["sudo", "apt-get", "install", "python-gpiozero", "-y"])
 
+def install_crontab_module():
+    subprocess.run(["sudo", "pip3", "install", "python-crontab"])
+
 def system_update():
     subprocess.run(["sudo", "apt", "update"])
     subprocess.run(["sudo", "apt", "upgrade", "-y"])
 
 def setup_cron_jobs():
+    from crontab import CronTab
+    
     cron = CronTab(user=True)
     # Add a cron job to reboot the system every Monday at 2 am
     reboot_job = cron.new(command='sudo reboot', comment='Reboot system every Monday at 2 am')
     reboot_job.dow.on('MON')
     reboot_job.hour.on(2)
     reboot_job.minute.on(0)
-    
-    # Add a cron job to run your script every day
-    script_job = cron.new(command='/path/to/your/script.py', comment='Run your script every day')
-    script_job.minute.on(0)
-    script_job.hour.on(0)
     
     cron.write()
 
@@ -51,6 +50,7 @@ def main():
     system_update()
     install_python_packages()
     install_gpiozero()
+    install_crontab_module()
     setup_cron_jobs()
     setup_automatic_updates()
 
