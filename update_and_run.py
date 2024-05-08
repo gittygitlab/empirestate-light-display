@@ -4,8 +4,8 @@ import subprocess
 
 # Define paths
 REPO_URL = "https://github.com/gittygitlab/empirestate-light-display.git"
-LOCAL_REPO_PATH = "/home/administrator/empirestate/empirestate-light-display"
-SCRIPT_PATH = "/home/administrator/empirestate/empirestate-light-display/empirestate_display.py"
+LOCAL_REPO_PATH = "/home/administrator/empirestate"
+SCRIPT_PATH = "/home/administrator/empirestate/empirestate_display.py"
 
 def update_repo():
     os.chdir(LOCAL_REPO_PATH)  # Change current working directory to repository directory
