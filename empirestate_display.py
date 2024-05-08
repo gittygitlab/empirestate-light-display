@@ -136,10 +136,10 @@ try:
                 "lights": lights,
                 "event_description": event_description
             }
-            export_event_details(event_details, "/home/administrator/empirestate/empirestate-light-display/event_details.json")
+            export_event_details(event_details, "/home/administrator/empirestate/event_details.json")
 
             # Load the background image for days with an event
-            background_image_path = "/home/administrator/empirestate/empirestate-light-display/empirestatespire.png"
+            background_image_path = "/home/administrator/empirestate/empirestatespire.png"
             background_image = Image.open(background_image_path)
             background_image = background_image.resize((width, height), Image.ANTIALIAS)
 
@@ -211,6 +211,40 @@ try:
                 draw.text((20, y_position), line, font=font, fill=0)
                 y_position += max_line_height + line_spacing  # Use the maximum line height for consistent spacing
             
+            # Display the final image
+            logging.info("Displaying image on display")
+            epd.display(epd.getbuffer(final_image))
+        else:
+            # If there is no event today, show the new image with "No events today" message
+
+            # Load the new image
+            new_image_path = "/home/administrator/empirestate/empirestateskyline.png"
+            new_image = Image.open(new_image_path)
+            new_image = new_image.resize((width, height), Image.ANTIALIAS)
+
+            # Create a new image to draw text over the loaded image
+            final_image = Image.new("1", (width, height), 255)  # 255: clear the frame
+            final_image.paste(new_image, (0, 0))
+
+            # Initialize draw
+            draw = ImageDraw.Draw(final_image)
+
+            # Calculate text dimensions for today's date
+            date_text = todays_date.strftime("%A, %B ") + str(todays_date.day)
+            date_text_width, date_text_height = draw.textsize(date_text, font=font)
+
+            # Draw today's date on the upper left corner
+            draw.text((width - date_text_width - 30, 10), date_text, font=bold_font, fill=0)
+
+            # Draw underline below today's date
+            underline_y = 10 + date_text_height
+            draw.line((width - date_text_width - 30, underline_y, width - 30, underline_y), fill=0, width=2)
+
+            # Draw "No events today" text below today's date
+            no_events_text = "No events today"
+            text_width, text_height = draw.textsize(no_events_text, font=font)
+            draw.text((width - text_width - 30, underline_y + 10), no_events_text, font=font, fill=0)
+
             # Display the final image
             logging.info("Displaying image on display")
             epd.display(epd.getbuffer(final_image))
