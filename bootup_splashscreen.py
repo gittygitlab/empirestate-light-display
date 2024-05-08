@@ -1,40 +1,114 @@
-import logging
-import time
-from PIL import Image, ImageDraw, ImageFont
-from waveshare_epd import epd4in26  # Import the e-Paper library
+import subprocess
 
-# Set debug mode for WaveShare EPD
-logging.basicConfig(level=logging.DEBUG)
+def install_python_packages():
+    # Install Python 3 packages
+    subprocess.run(["sudo", "apt-get", "update"])
+    subprocess.run(["sudo", "apt-get", "install", "python3-pip", "python3-pil", "python3-numpy", "python3-git", "-y"])
+    subprocess.run(["sudo", "pip3", "install", "spidev"])
 
-# Initialize e-ink display
-logging.info("Initializing e-ink display")
-epd = epd4in26.EPD()
-epd.init()
+    # Install Python 2 packages
+    subprocess.run(["sudo", "apt-get", "install", "python-pip", "python-pil", "python-numpy", "python-git", "-y"])
+    subprocess.run(["sudo", "pip", "install", "spidev"])
 
-# Define font and messages
-font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-font_size = 24
-font = ImageFont.truetype(font_path, font_size)
+def install_gpiozero():
+    # Install gpiozero library for Python 3
+    subprocess.run(["sudo", "apt-get", "install", "python3-gpiozero", "-y"])
 
-message1 = "Hello\n\nNow booting...\nEstimated time: 45 seconds\n\n\n\n\nProject by: Tyler Wahl (2024)\nhttps://github.com/gittygitlab/empirestate-light-display"
+    # Install gpiozero library for Python 2
+    subprocess.run(["sudo", "apt-get", "install", "python-gpiozero", "-y"])
 
-# Create an image with a white background
-width, height = epd.width, epd.height
-image = Image.new("1", (width, height), 255)  # 255: clear the frame
-draw = ImageDraw.Draw(image)
+def install_crontab_module():
+    subprocess.run(["sudo", "pip3", "install", "python-crontab"])
 
-# Calculate text size and position for message1
-text_width, text_height = draw.textsize(message1, font=font)
-x = (width - text_width) // 2
-y = (height - text_height) // 2 - 10  # Slightly above center
+def system_update():
+    subprocess.run(["sudo", "apt", "update"])
+    subprocess.run(["sudo", "apt", "upgrade", "-y"])
 
-# Draw message1 on the image
-draw.multiline_text((x, y), message1, font=font, fill=0, align="center")
+def setup_cron_jobs():
+    from crontab import CronTab
+    
+    cron = CronTab(user=True)
+    # Add a cron job to reboot the system at 3 am every Monday
+    reboot_job = cron.new(command='sudo reboot', comment='Reboot system at 3 am every Monday')
+    reboot_job.dow.on('MON')
+    reboot_job.hour.on(3)
+    reboot_job.minute.on(0)
+    
+    # Add a cron job to run /home/administrator/empirestate/update_and_run.py at 4 am every morning
+    update_and_run_job = cron.new(command='python3 /home/administrator/empirestate/update_and_run.py', comment='Run update_and_run.py at 4 am every morning')
+    update_and_run_job.hour.on(4)
+    update_and_run_job.minute.on(0)
+    
+    # Add cron jobs to run /home/administrator/check_website.py every hour from 7 am to 11 pm every day
+    for hour in range(7, 24):
+        check_website_job = cron.new(command='python3 /home/administrator/check_website.py', comment=f'Run check_website.py every hour from 7am until 11pm')
+        check_website_job.hour.on(hour)
+        check_website_job.minute.on(0)
+    
+    cron.write()
 
-# Display the image on the e-ink display
-logging.info("Displaying splash screen")
-epd.display(epd.getbuffer(image))
+def setup_automatic_updates():
+    subprocess.run(["sudo", "apt-get", "install", "unattended-upgrades", "-y"])
+    with open('/etc/apt/apt.conf.d/50unattended-upgrades', 'a') as f:
+        f.write('APT::Periodic::Update-Package-Lists "1";\n')
+        f.write('APT::Periodic::Download-Upgradeable-Packages "1";\n')
+        f.write('APT::Periodic::AutocleanInterval "7";\n')
+        f.write('APT::Periodic::Unattended-Upgrade "1";\n')
+        # Disable automatic reboot after updates
+        f.write('Unattended-Upgrade::Automatic-Reboot "false";\n')
 
-# Sleep
-logging.info("Powering off the display")
-epd.sleep()
+def setup_shutdown_service():
+    # Create the service unit file
+    service_unit_content = """
+[Unit]
+Description=Run shutdown_splashscreen.py on shutdown
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/true
+ExecStop=/usr/bin/python3 /home/administrator/empirestate/shutdown_splashscreen.py
+
+[Install]
+WantedBy=halt.target reboot.target shutdown.target
+"""
+    with open('/etc/systemd/system/shutdown_splashscreen.service', 'w') as f:
+        f.write(service_unit_content)
+    
+    # Enable the service
+    subprocess.run(["sudo", "systemctl", "enable", "shutdown_splashscreen.service"])
+
+def setup_update_and_run_service():
+    # Create the service unit file
+    service_unit_content = """
+[Unit]
+Description=Run update_and_run.py after network is up
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/administrator/empirestate/update_and_run.py
+
+[Install]
+WantedBy=multi-user.target
+"""
+    with open('/etc/systemd/system/update_and_run.service', 'w') as f:
+        f.write(service_unit_content)
+    
+    # Enable the service
+    subprocess.run(["sudo", "systemctl", "enable", "update_and_run.service"])
+
+def main():
+    system_update()
+    install_python_packages()
+    install_gpiozero()
+    install_crontab_module()
+    setup_cron_jobs()
+    setup_automatic_updates()
+    setup_shutdown_service()
+    setup_update_and_run_service()
+
+if __name__ == "__main__":
+    main()
