@@ -10,7 +10,7 @@ import subprocess
 logging.basicConfig(level=logging.DEBUG)
 
 # Function to load event details from file
-def load_event_details(file_path="/home/administrator/empirestate/empirestate-light-display/event_details.json"):
+def load_event_details(file_path="/home/administrator/empirestate/event_details.json"):
     try:
         with open(file_path, "r") as file:
             return json.load(file)
@@ -18,7 +18,7 @@ def load_event_details(file_path="/home/administrator/empirestate/empirestate-li
         return None
 
 # Function to export event details to a file
-def export_event_details(event_details, file_path="/home/administrator/empirestate/empirestate-light-display/event_details.json"):
+def export_event_details(event_details, file_path="/home/administrator/empirestate/event_details.json"):
     with open(file_path, "w") as file:
         json.dump(event_details, file)
 
@@ -59,7 +59,7 @@ def check_and_run_display():
                 export_event_details(event_details_new)
                 logging.info("Event details have changed. Running display script.")
                 # Run display script
-                display_script_path = "/home/administrator/empirestate/empirestate-light-display/empirestate_display.py"
+                display_script_path = "/home/administrator/empirestate/empirestate_display.py"
                 subprocess.run(["python3", display_script_path])
             else:
                 logging.info("No change in event details.")
