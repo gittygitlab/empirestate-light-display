@@ -28,38 +28,53 @@ def setup_cron_jobs():
     from crontab import CronTab
     
     cron = CronTab(user=True)
-    # Add a cron job to reboot the system at 3 am every Monday
-    reboot_job = cron.new(command='sudo reboot', comment='Reboot system at 3 am every Monday')
-    reboot_job.dow.on('MON')
-    reboot_job.hour.on(3)
-    reboot_job.minute.on(0)
     
-    # Add a cron job to run /home/administrator/empirestate/update_and_run.py at 4 am every morning
-    update_and_run_job = cron.new(command='python3 /home/administrator/empirestate/update_and_run.py', comment='Run update_and_run.py at 4 am every morning')
-    update_and_run_job.hour.on(4)
-    update_and_run_job.minute.on(0)
+    # Check if the reboot job already exists
+    existing_reboot_jobs = cron.find_comment('Reboot system at 3 am every Monday')
+    if not existing_reboot_jobs:
+        # Add a cron job to reboot the system at 3 am every Monday
+        reboot_job = cron.new(command='sudo reboot', comment='Reboot system at 3 am every Monday')
+        reboot_job.dow.on('MON')
+        reboot_job.hour.on(3)
+        reboot_job.minute.on(0)
+    
+    # Check if the update_and_run job already exists
+    existing_update_and_run_jobs = cron.find_comment('Run update_and_run.py at 4 am every morning')
+    if not existing_update_and_run_jobs:
+        # Add a cron job to run /home/administrator/empirestate/update_and_run.py at 4 am every morning
+        update_and_run_job = cron.new(command='python3 /home/administrator/empirestate/update_and_run.py', comment='Run update_and_run.py at 4 am every morning')
+        update_and_run_job.hour.on(4)
+        update_and_run_job.minute.on(0)
     
     # Add cron jobs to run /home/administrator/check_website.py every hour from 7 am to 11 pm every day
     for hour in range(7, 24):
-        check_website_job = cron.new(command='python3 /home/administrator/check_website.py', comment=f'Run check_website.py every hour from 7am until 11pm')
-        check_website_job.hour.on(hour)
-        check_website_job.minute.on(0)
+        existing_check_website_jobs = cron.find_comment(f'Run check_website.py every hour from 7am until 11pm at {hour} hour')
+        if not existing_check_website_jobs:
+            check_website_job = cron.new(command=f'python3 /home/administrator/check_website.py', comment=f'Run check_website.py every hour from 7am until 11pm at {hour} hour')
+            check_website_job.hour.on(hour)
+            check_website_job.minute.on(0)
     
     cron.write()
 
 def setup_automatic_updates():
-    subprocess.run(["sudo", "apt-get", "install", "unattended-upgrades", "-y"])
-    with open('/etc/apt/apt.conf.d/50unattended-upgrades', 'a') as f:
-        f.write('APT::Periodic::Update-Package-Lists "1";\n')
-        f.write('APT::Periodic::Download-Upgradeable-Packages "1";\n')
-        f.write('APT::Periodic::AutocleanInterval "7";\n')
-        f.write('APT::Periodic::Unattended-Upgrade "1";\n')
-        # Disable automatic reboot after updates
-        f.write('Unattended-Upgrade::Automatic-Reboot "false";\n')
+    # Check if the automatic updates are already set up
+    existing_updates = subprocess.run(["sudo", "apt-get", "install", "--dry-run", "unattended-upgrades"], capture_output=True, text=True)
+    if "unattended-upgrades is already the newest version" not in existing_updates.stdout:
+        subprocess.run(["sudo", "apt-get", "install", "unattended-upgrades", "-y"])
+        with open('/etc/apt/apt.conf.d/50unattended-upgrades', 'a') as f:
+            f.write('APT::Periodic::Update-Package-Lists "1";\n')
+            f.write('APT::Periodic::Download-Upgradeable-Packages "1";\n')
+            f.write('APT::Periodic::AutocleanInterval "7";\n')
+            f.write('APT::Periodic::Unattended-Upgrade "1";\n')
+            # Disable automatic reboot after updates
+            f.write('Unattended-Upgrade::Automatic-Reboot "false";\n')
 
 def setup_shutdown_service():
-    # Create the service unit file
-    service_unit_content = """
+    # Check if the shutdown service already exists
+    existing_shutdown_service = subprocess.run(["sudo", "systemctl", "status", "shutdown_splashscreen.service"], capture_output=True, text=True)
+    if "shutdown_splashscreen.service could not be found" in existing_shutdown_service.stdout:
+        # Create the service unit file
+        service_unit_content = """
 [Unit]
 Description=Run shutdown_splashscreen.py on shutdown
 DefaultDependencies=no
@@ -73,15 +88,18 @@ ExecStop=/usr/bin/python3 /home/administrator/empirestate/shutdown_splashscreen.
 [Install]
 WantedBy=halt.target reboot.target shutdown.target
 """
-    with open('/etc/systemd/system/shutdown_splashscreen.service', 'w') as f:
-        f.write(service_unit_content)
-    
-    # Enable the service
-    subprocess.run(["sudo", "systemctl", "enable", "shutdown_splashscreen.service"])
+        with open('/etc/systemd/system/shutdown_splashscreen.service', 'w') as f:
+            f.write(service_unit_content)
+        
+        # Enable the service
+        subprocess.run(["sudo", "systemctl", "enable", "shutdown_splashscreen.service"])
 
 def setup_update_and_run_service():
-    # Create the service unit file
-    service_unit_content = """
+    # Check if the update_and_run service already exists
+    existing_update_and_run_service = subprocess.run(["sudo", "systemctl", "status", "update_and_run.service"], capture_output=True, text=True)
+    if "update_and_run.service could not be found" in existing_update_and_run_service.stdout:
+        # Create the service unit file
+        service_unit_content = """
 [Unit]
 Description=Run update_and_run.py after network is up
 Wants=network-online.target
@@ -94,11 +112,11 @@ ExecStart=/usr/bin/python3 /home/administrator/empirestate/update_and_run.py
 [Install]
 WantedBy=multi-user.target
 """
-    with open('/etc/systemd/system/update_and_run.service', 'w') as f:
-        f.write(service_unit_content)
-    
-    # Enable the service
-    subprocess.run(["sudo", "systemctl", "enable", "update_and_run.service"])
+        with open('/etc/systemd/system/update_and_run.service', 'w') as f:
+            f.write(service_unit_content)
+        
+        # Enable the service
+        subprocess.run(["sudo", "systemctl", "enable", "update_and_run.service"])
 
 def main():
     system_update()
