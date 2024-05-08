@@ -4,12 +4,12 @@ from crontab import CronTab
 def install_python_packages():
     # Install Python 3 packages
     subprocess.run(["sudo", "apt-get", "update"])
-    subprocess.run(["sudo", "apt-get", "install", "python3-pip", "python3-pil", "python3-numpy", "-y"])
-    subprocess.run(["sudo", "pip3", "install", "spidev", "GitPython"])
+    subprocess.run(["sudo", "apt-get", "install", "python3-pip", "python3-pil", "python3-numpy", "python3-git", "-y"])
+    subprocess.run(["sudo", "pip3", "install", "spidev"])
 
     # Install Python 2 packages
-    subprocess.run(["sudo", "apt-get", "install", "python-pip", "python-pil", "python-numpy", "-y"])
-    subprocess.run(["sudo", "pip", "install", "spidev", "GitPython"])
+    subprocess.run(["sudo", "apt-get", "install", "python-pip", "python-pil", "python-numpy", "python-git", "-y"])
+    subprocess.run(["sudo", "pip", "install", "spidev"])
 
 def install_gpiozero():
     # Install gpiozero library for Python 3
