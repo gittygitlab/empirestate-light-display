@@ -26,8 +26,8 @@ The Empire State Light Display project retrieves information about the Empire St
 #### If update fails, see troubleshooting below.
 
 ### Clone Repo and run setup script
-Clone repo to /home/administrator/empirestate 
-	```python
+Clone repo to /home/administrator/empirestate
+	```
     sudo git clone https://github.com/gittygitlab/empirestate-light-display.git /home/administrator/empirestate
     ```
 
