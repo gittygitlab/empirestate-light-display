@@ -26,17 +26,15 @@ Then reboot your Raspberry Pi:
 Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
 
 ### Update system
-	  ```
       sudo apt update
 	  sudo apt upgrade
-      ```
 #### If update fails, see troubleshooting below.
 
 ### Clone Repo and run setup script
 Clone repo to /home/administrator/empirestate: 
-	```
-    sudo git clone https://github.com/gittygitlab/empirestate-light-display.git /home/administrator/empirestate
-    ```
+	
+	  sudo git clone https://github.com/gittygitlab/empirestate-light-display.git /home/administrator/empirestate
+    
 
 Run setup script: 
 	```
