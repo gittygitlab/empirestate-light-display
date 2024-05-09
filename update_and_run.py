@@ -9,7 +9,7 @@ LOCAL_REPO_PATH = "/home/administrator/empirestate"
 SCRIPT_PATH = "/home/administrator/empirestate/empirestate_display.py"
 FIRST_SERVICE_NAME = "bootup_splashscreen.service"
 SECOND_SERVICE_NAME = "update_and_run.service"
-GPIO_PIN = 17  # Example GPIO pin used by the first service
+GPIO_PIN = 18  # Example GPIO pin used by the first service
 
 def update_repo():
     os.chdir(LOCAL_REPO_PATH)  # Change current working directory to repository directory
