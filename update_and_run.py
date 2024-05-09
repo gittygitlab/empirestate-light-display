@@ -9,8 +9,9 @@ SCRIPT_PATH = "/home/administrator/empirestate/empirestate_display.py"
 def update_repo():
     os.chdir(LOCAL_REPO_PATH)  # Change current working directory to repository directory
     if os.path.exists(".git"):
-        # Use git command-line tool to pull updates
-        subprocess.run(["git", "pull", "--force"])  # Add --force flag here
+        # Use git command-line tool to reset local changes and pull updates
+        subprocess.run(["git", "reset", "--hard", "HEAD"])  # Reset local changes
+        subprocess.run(["git", "pull"])  # Pull updates
     else:
         # Clone the repository if it doesn't exist locally
         subprocess.run(["git", "clone", REPO_URL, LOCAL_REPO_PATH])
