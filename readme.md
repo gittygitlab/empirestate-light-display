@@ -14,19 +14,19 @@ The Empire State Light Display project retrieves information about the Empire St
 ### Setup directions and project files are built on the user being named 'administrator'. Current code will not work with a different username.
 
 ### Enable SPI Interface
-Open the Raspberry Pi terminal and enter the following command in the config interface:
+1 Open the Raspberry Pi terminal and enter the following command in the config interface:
 	  ```
       sudo raspi-config
       ```
 
-Choose Interfacing Options -> SPI -> Yes Enable SPI interface
+    Choose Interfacing Options -> SPI -> Yes Enable SPI interface
 
-Reboot your Raspberry Pi:
+2 Reboot your Raspberry Pi:
 	  ```
       sudo reboot
       ```
 
-Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
+3 Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
 
 ### Update system
       sudo apt update
@@ -38,7 +38,7 @@ Clone repo to /home/administrator/empirestate:
 	  ```
       sudo git clone https://github.com/gittygitlab/empirestate-light-display.git /home/administrator/empirestate
       ```
-      
+
 Run setup script: 
 	  ```
       sudo python ./empirestate/setup.py
