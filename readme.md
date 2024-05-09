@@ -27,10 +27,10 @@ The Empire State Light Display project retrieves information about the Empire St
 
 ### Clone Repo and run setup script
 Clone repo to /home/administrator/empirestate 
-	sudo git clone https://github.com/gittygitlab/empirestate-light-display.git /home/administrator/empirestate
+	'''sudo git clone https://github.com/gittygitlab/empirestate-light-display.git /home/administrator/empirestate'''
 
 Run setup script
-	sudo python ./empirestate/setup.py
+	'''sudo python ./empirestate/setup.py'''
 
 
 ## Troubleshooting
