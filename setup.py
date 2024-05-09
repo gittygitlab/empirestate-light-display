@@ -109,6 +109,17 @@ WantedBy=multi-user.target
     # Enable the service
     subprocess.run(["sudo", "systemctl", "enable", "bootup_splashscreen.service"])
 
+def setup_clear_screen_job():
+    from crontab import CronTab
+
+    cron = CronTab(user=True)
+    # Add a cron job to run /home/administrator/empirestate/clear_screen.py at 2 am every morning
+    clear_screen_job = cron.new(command='python3 /home/administrator/empirestate/clear_screen.py', comment='Run clear_screen.py at 2 am every morning')
+    clear_screen_job.hour.on(2)
+    clear_screen_job.minute.on(0)
+
+    cron.write()
+
 def log_error(message):
     print(f"ERROR: {message}")
 
@@ -125,6 +136,7 @@ def main():
     setup_automatic_updates()
     setup_shutdown_service()
     setup_bootup_service()  # Setup the bootup service
+    setup_clear_screen_job()  # Setup the clear screen job
     
     # Create the event_details.json file and set permissions
     event_details_file = "/home/administrator/empirestate/event_details.json"
