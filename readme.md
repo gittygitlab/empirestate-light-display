@@ -17,8 +17,8 @@ The Empire State Light Display project retrieves information about the Empire St
 ####Choose Interfacing Options -> SPI -> Yes Enable SPI interface
 ####Then reboot your Raspberry Pi:
 	  sudo reboot
-
-#####Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
+   
+####Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
 
 ### Update system
 	  sudo apt update
