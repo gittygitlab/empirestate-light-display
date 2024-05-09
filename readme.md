@@ -13,10 +13,14 @@ The Empire State Light Display project retrieves information about the Empire St
 ### Note: Setup directions and project files are built on the user being named 'administrator'. Current code will not work with a different username.
 ### Enable SPI Interface
 Open the Raspberry Pi terminal and enter the following command in the config interface:
-	  sudo raspi-config
+	  ```
+      sudo raspi-config
+      ```
 Choose Interfacing Options -> SPI -> Yes Enable SPI interface
 Reboot your Raspberry Pi:
-	  sudo reboot
+	  ```
+      sudo reboot
+      ```
 Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
 
 ### Update system
@@ -35,7 +39,7 @@ Run setup script:
 
 ## Troubleshooting
 ### If system update stalls reading changelogs, swap file may be too small.
-1. Before we can increase our Raspberry Pi’s swap file, we must first temporarily stop it.
+1. Before we can increase our Raspberry Pis swap file, we must first temporarily stop it.
 	  sudo dphys-swapfile swapoff
 
 2. Next, we need to modify the swap file configuration file.
@@ -52,7 +56,7 @@ Run setup script:
 
 5. Once you have made the change, save the file by pressing CTRL + X, followed by Y, then ENTER.
 
-6. We can now re-initialize the Raspberry Pi’s swap file by running the command below.
+6. We can now re-initialize the Raspberry Pis swap file by running the command below.
 	  sudo dphys-swapfile setup
 
 7. With the swap now recreated to the newly defined size, we can now turn the swap back on.
