@@ -1,21 +1,23 @@
 import subprocess
 import logging
 import os
-from crontab import CronTab
 
 def install_python_packages():
     try:
         # Install Python 3 packages
         subprocess.run(["sudo", "apt-get", "update"])
-        subprocess.run(["sudo", "apt-get", "install", "python3-pip", "python3-pil", "python3-numpy", "python3-git", "python3-crontab", "-y"])
-        subprocess.run(["sudo", "pip3", "install", "spidev"])
+        subprocess.run(["sudo", "apt-get", "install", "python3-pip", "python3-pil", "python3-numpy", "python3-git", "-y"])
 
         # Install Python 2 packages
         subprocess.run(["sudo", "apt-get", "install", "python-pip", "python-pil", "python-numpy", "python-git", "-y"])
-        subprocess.run(["sudo", "pip", "install", "spidev"])
+
         logging.info("Python packages installed successfully.")
     except Exception as e:
         log_error(f"Failed to install Python packages: {str(e)}")
+
+def install_crontab_module():
+    # Install python3-crontab using apt
+    subprocess.run(["sudo", "apt-get", "install", "python3-crontab", "-y"])
 
 def install_gpiozero():
     # Install gpiozero library for Python 3
@@ -23,9 +25,6 @@ def install_gpiozero():
 
     # Install gpiozero library for Python 2
     subprocess.run(["sudo", "apt-get", "install", "python-gpiozero", "-y"])
-
-def install_crontab_module():
-    subprocess.run(["sudo", "pip3", "install", "python-crontab"])
 
 def install_ntpdate():
     # Install ntpdate
@@ -36,8 +35,18 @@ def system_update():
     subprocess.run(["sudo", "apt", "upgrade", "-y"])
 
 def setup_cron_jobs():
-    cron = CronTab(user=True)
+    try:
+        from crontab import CronTab
+    except ImportError as e:
+        log_error(f"Failed to import CronTab: {e}. Make sure python-crontab module is installed.")
+        return
     
+    try:
+        cron = CronTab(user=True)
+    except Exception as e:
+        log_error(f"Failed to instantiate CronTab: {e}. Make sure python-crontab module is correctly installed.")
+        return
+
     # Check if the reboot job already exists
     reboot_job_exists = False
     update_and_run_job_exists = False
@@ -158,15 +167,14 @@ def log_error(message):
     print(f"ERROR: {message}")
 
 def main():
-    # Change ownership of the empirestate directory
+    install_crontab_module()  # Install crontab module
     subprocess.run(["sudo", "chown", "-R", "administrator:administrator", "/home/administrator/empirestate"])
     subprocess.run(["sudo", "chmod", "-R", "777", "/home/administrator/empirestate"])  # Set permissions to 777
     
     system_update()
-    install_ntpdate()  # Installing ntpdate
+    install_ntpdate()
     install_python_packages()
     install_gpiozero()
-    install_crontab_module()
     setup_cron_jobs()
     setup_automatic_updates()
     setup_shutdown_service()
