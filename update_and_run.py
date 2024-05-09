@@ -10,7 +10,7 @@ def update_repo():
     os.chdir(LOCAL_REPO_PATH)  # Change current working directory to repository directory
     if os.path.exists(".git"):
         # Use git command-line tool to pull updates
-        subprocess.run(["git", "pull"])
+        subprocess.run(["git", "pull", "--force"])  # Add --force flag here
     else:
         # Clone the repository if it doesn't exist locally
         subprocess.run(["git", "clone", REPO_URL, LOCAL_REPO_PATH])
