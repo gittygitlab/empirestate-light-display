@@ -113,6 +113,9 @@ def log_error(message):
     print(f"ERROR: {message}")
 
 def main():
+    # Change ownership of the empirestate directory
+    subprocess.run(["sudo", "chown", "-R", "administrator:administrator", "/home/administrator/empirestate"])
+    
     system_update()
     install_ntpdate()  # Installing ntpdate
     install_python_packages()
