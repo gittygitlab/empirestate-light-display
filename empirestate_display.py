@@ -158,7 +158,7 @@ try:
             export_event_details(event_details, event_details_file)
 
             # Load the background image for days with an event
-            background_image_path = "/home/administrator/empirestate/empirestatespire.png"
+            background_image_path = "/home/administrator/empirestate/media/empirestatespire.png"
             background_image = Image.open(background_image_path)
             background_image = background_image.resize((width, height), Image.LANCZOS)
 
@@ -237,7 +237,7 @@ try:
             # If there is no event today, show the new image with "No events today" message
 
             # Load the new image
-            new_image_path = "/home/administrator/empirestate/empirestateskyline.png"
+            new_image_path = "/home/administrator/empirestate/media/empirestateskyline.png"
             new_image = Image.open(new_image_path)
             new_image = new_image.resize((width, height), Image.LANCZOS)
 
