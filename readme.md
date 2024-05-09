@@ -25,7 +25,7 @@ The Empire State Light Display project retrieves information about the Empire St
       sudo reboot
       ```
 
-4. Check /boot/firmware/config.txt, and you can see 'dtparam=spi=on' was written in.
+4. Check `/boot/firmware/config.txt`, and you can see 'dtparam=spi=on' was written in.
 
 ### Update System
       sudo apt update
