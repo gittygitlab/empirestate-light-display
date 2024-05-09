@@ -1,14 +1,61 @@
 # Empire State Light Display
 
-The Empire State Light Display project retrieves information about the Empire State Building tower lights schedule from its official website and displays it on an e-ink display. This project is useful for individuals who want to know about the lighting events happening at the Empire State Building on a given day.
+The Empire State Light Display project retrieves information about the Empire State Building tower lights schedule from its official website and displays it on an e-ink display.
 
 ## Features
 
 - Retrieves tower lights schedule information from the Empire State Building website.
 - Displays the schedule information on an e-ink display.
-- Automatically updates the system time using NTP servers.
-- Manually sets the date for testing purposes.
-- Exports and loads event details to/from a JSON file.
-- Uses beautiful soup for parsing HTML content.
-- Utilizes the PIL library for image processing.
-- Displays error messages and attempts auto-repair if an error occurs during execution.
+- Checks throughout the day for changes.
+
+## Setup
+### Enable SPI Interface
+1) Open the Raspberry Pi terminal and enter the following command in the config interface:
+	  sudo raspi-config
+    Choose Interfacing Options -> SPI -> Yes Enable SPI interface
+
+2) Then reboot your Raspberry Pi:
+	  sudo reboot
+
+3) Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
+
+### Update system
+	  sudo apt update
+	  sudo apt upgrade
+#### If update fails, see troubleshooting below.
+
+### Clone Repo and run setup script
+1) Clone repo to /home/administrator/empirestate 
+   sudo git clone https://github.com/gittygitlab/empirestate-light-display.git /home/administrator/empirestate
+
+2) Run setup script
+	  sudo python ./empirestate/setup.py
+
+
+## Troubleshooting
+### If system update stalls reading changelogs, swap file may be too small.
+1. Before we can increase our Raspberry Pi’s swap file, we must first temporarily stop it.
+	  sudo dphys-swapfile swapoff
+
+2. Next, we need to modify the swap file configuration file.
+	  sudo nano /etc/dphys-swapfile
+
+3. Within this config file, find the following line of text.
+	  CONF_SWAPSIZE=100
+
+	  This number is the size of the swap in megabytes.
+	  CONF_SWAPSIZE=1024  # This would be 1GB
+
+	  Whatever size you set, you must have that space available on your SD card. Check file directory with:
+     df -h 
+
+5. Once you have made the change, save the file by pressing CTRL + X, followed by Y, then ENTER.
+
+6. We can now re-initialize the Raspberry Pi’s swap file by running the command below.
+	  sudo dphys-swapfile setup
+
+7. With the swap now recreated to the newly defined size, we can now turn the swap back on.
+	  sudo dphys-swapfile swapon
+
+8. If you want all programs to be reloaded with access to the new memory pool, then the easiest way is to restart your device.
+	  sudo reboot
