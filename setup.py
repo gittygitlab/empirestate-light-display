@@ -89,6 +89,26 @@ WantedBy=halt.target reboot.target shutdown.target
     # Enable the service
     subprocess.run(["sudo", "systemctl", "enable", "shutdown_splashscreen.service"])
 
+def setup_bootup_service():
+    # Create the service unit file
+    service_unit_content = """
+[Unit]
+Description=Run bootup_splashscreen.py on startup
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/administrator/empirestate/bootup_splashscreen.py
+
+[Install]
+WantedBy=multi-user.target
+"""
+    with open('/etc/systemd/system/bootup_splashscreen.service', 'w') as f:
+        f.write(service_unit_content)
+    
+    # Enable the service
+    subprocess.run(["sudo", "systemctl", "enable", "bootup_splashscreen.service"])
+
 def log_error(message):
     print(f"ERROR: {message}")
 
@@ -101,6 +121,7 @@ def main():
     setup_cron_jobs()
     setup_automatic_updates()
     setup_shutdown_service()
+    setup_bootup_service()  # Setup the bootup service
     
     # Create the event_details.json file and set permissions
     event_details_file = "/home/administrator/empirestate/event_details.json"
