@@ -10,6 +10,7 @@ The Empire State Light Display project retrieves information about the Empire St
 - Automatically runs system updates and reboots once a week
 
 ## Setup
+### Note: Setup directions and project files are built on the user being named 'administrator'. Current code will not work with a different username.
 ### Enable SPI Interface
 ####Open the Raspberry Pi terminal and enter the following command in the config interface:
 	  sudo raspi-config
@@ -26,13 +27,15 @@ The Empire State Light Display project retrieves information about the Empire St
 #### If update fails, see troubleshooting below.
 
 ### Clone Repo and run setup script
-Clone repo to /home/administrator/empirestate
+Clone repo to /home/administrator/empirestate: 
 	```
     sudo git clone https://github.com/gittygitlab/empirestate-light-display.git /home/administrator/empirestate
     ```
 
-Run setup script
-	'''sudo python ./empirestate/setup.py'''
+Run setup script: 
+	'''
+    sudo python ./empirestate/setup.py
+    '''
 
 
 ## Troubleshooting
