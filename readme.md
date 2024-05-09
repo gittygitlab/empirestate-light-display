@@ -11,11 +11,11 @@ The Empire State Light Display project retrieves information about the Empire St
 ## Setup
 ### Enable SPI Interface
 1) Open the Raspberry Pi terminal and enter the following command in the config interface:
-		sudo raspi-config
-    		Choose Interfacing Options -> SPI -> Yes Enable SPI interface
+	'sudo raspi-config'
+	Choose Interfacing Options -> SPI -> Yes Enable SPI interface
 
 2) Then reboot your Raspberry Pi:
-	  sudo reboot
+	'sudo reboot'
 
 3) Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
 
@@ -41,13 +41,13 @@ The Empire State Light Display project retrieves information about the Empire St
 	  sudo nano /etc/dphys-swapfile
 
 3. Within this config file, find the following line of text.
-	  CONF_SWAPSIZE=100
+	CONF_SWAPSIZE=100
 
-	  This number is the size of the swap in megabytes.
-	  CONF_SWAPSIZE=1024  # This would be 1GB
+	This number is the size of the swap in megabytes.
+	CONF_SWAPSIZE=1024  # This would be 1GB
 
-	  Whatever size you set, you must have that space available on your SD card. Check file directory with:
-     df -h 
+	Whatever size you set, you must have that space available on your SD card. Check file directory with:
+   	df -h 
 
 5. Once you have made the change, save the file by pressing CTRL + X, followed by Y, then ENTER.
 
