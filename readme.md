@@ -12,7 +12,7 @@ The Empire State Light Display project retrieves information about the Empire St
 ## Setup
 ### Enable SPI Interface
 1) Open the Raspberry Pi terminal and enter the following command in the config interface:
-   	'''sudo raspi-config'''
+				sudo raspi-config
    	Choose Interfacing Options -> SPI -> Yes Enable SPI interface
 
 3) Then reboot your Raspberry Pi:
