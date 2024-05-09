@@ -1,14 +1,20 @@
 import subprocess
+import logging
+import os
 
 def install_python_packages():
-    # Install Python 3 packages
-    subprocess.run(["sudo", "apt-get", "update"])
-    subprocess.run(["sudo", "apt-get", "install", "python3-pip", "python3-pil", "python3-numpy", "python3-git", "-y"])
-    subprocess.run(["sudo", "pip3", "install", "spidev"])
+    try:
+        # Install Python 3 packages
+        subprocess.run(["sudo", "apt-get", "update"])
+        subprocess.run(["sudo", "apt-get", "install", "python3-pip", "python3-pil", "python3-numpy", "python3-git", "python3-crontab", "-y"])
+        subprocess.run(["sudo", "pip3", "install", "spidev"])
 
-    # Install Python 2 packages
-    subprocess.run(["sudo", "apt-get", "install", "python-pip", "python-pil", "python-numpy", "python-git", "-y"])
-    subprocess.run(["sudo", "pip", "install", "spidev"])
+        # Install Python 2 packages
+        subprocess.run(["sudo", "apt-get", "install", "python-pip", "python-pil", "python-numpy", "python-git", "-y"])
+        subprocess.run(["sudo", "pip", "install", "spidev"])
+        logging.info("Python packages installed successfully.")
+    except Exception as e:
+        log_error(f"Failed to install Python packages: {str(e)}")
 
 def install_gpiozero():
     # Install gpiozero library for Python 3
@@ -19,6 +25,10 @@ def install_gpiozero():
 
 def install_crontab_module():
     subprocess.run(["sudo", "pip3", "install", "python-crontab"])
+
+def install_ntpdate():
+    # Install ntpdate
+    subprocess.run(["sudo", "apt-get", "install", "ntpdate", "-y"])
 
 def system_update():
     subprocess.run(["sudo", "apt", "update"])
@@ -79,14 +89,27 @@ WantedBy=halt.target reboot.target shutdown.target
     # Enable the service
     subprocess.run(["sudo", "systemctl", "enable", "shutdown_splashscreen.service"])
 
+def log_error(message):
+    print(f"ERROR: {message}")
+
 def main():
     system_update()
+    install_ntpdate()  # Installing ntpdate
     install_python_packages()
     install_gpiozero()
     install_crontab_module()
     setup_cron_jobs()
     setup_automatic_updates()
     setup_shutdown_service()
+    
+    # Create the event_details.json file and set permissions
+    event_details_file = "/home/administrator/empirestate/event_details.json"
+    try:
+        open(event_details_file, "w").close()  # Create an empty file
+        os.chmod(event_details_file, 0o777)  # Set permissions to 777
+        logging.info("event_details.json file created and permissions set successfully.")
+    except Exception as e:
+        log_error(f"Failed to create event_details.json file: {str(e)}")
 
 if __name__ == "__main__":
     main()
