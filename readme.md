@@ -7,15 +7,16 @@ The Empire State Light Display project retrieves information about the Empire St
 - Retrieves tower lights schedule information from the Empire State Building website.
 - Displays the schedule information on an e-ink display.
 - Checks throughout the day for changes.
+- Automatically runs system updates and reboots once a week
 
 ## Setup
 ### Enable SPI Interface
 1) Open the Raspberry Pi terminal and enter the following command in the config interface:
-   	'sudo raspi-config'
+   	'''sudo raspi-config'''
    	Choose Interfacing Options -> SPI -> Yes Enable SPI interface
 
 3) Then reboot your Raspberry Pi:
-	'sudo reboot'
+	'''sudo reboot'''
 
 4) Check /boot/config.txt, and you can see 'dtparam=spi=on' was written in.
 
