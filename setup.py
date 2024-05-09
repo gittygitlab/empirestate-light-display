@@ -120,12 +120,33 @@ def setup_clear_screen_job():
 
     cron.write()
 
+def setup_update_and_run_service():
+    # Create the service unit file
+    service_unit_content = """
+[Unit]
+Description=Run update_and_run.py after startup and internet connection
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/administrator/empirestate/update_and_run.py
+
+[Install]
+WantedBy=multi-user.target
+"""
+    with open('/etc/systemd/system/update_and_run.service', 'w') as f:
+        f.write(service_unit_content)
+    
+    # Enable the service
+    subprocess.run(["sudo", "systemctl", "enable", "update_and_run.service"])
+
 def log_error(message):
     print(f"ERROR: {message}")
 
 def main():
     # Change ownership of the empirestate directory
     subprocess.run(["sudo", "chown", "-R", "administrator:administrator", "/home/administrator/empirestate"])
+    subprocess.run(["sudo", "chmod", "-R", "777", "/home/administrator/empirestate"])  # Set permissions to 777
     
     system_update()
     install_ntpdate()  # Installing ntpdate
@@ -137,6 +158,7 @@ def main():
     setup_shutdown_service()
     setup_bootup_service()  # Setup the bootup service
     setup_clear_screen_job()  # Setup the clear screen job
+    setup_update_and_run_service()  # Setup the update_and_run service
     
     # Create the event_details.json file and set permissions
     event_details_file = "/home/administrator/empirestate/event_details.json"
