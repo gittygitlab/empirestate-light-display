@@ -43,6 +43,13 @@ The Empire State Light Display project retrieves information about the Empire St
       sudo python ./empirestate/setup.py
       ```
 
+### Start Display Script
+1. Run the update_and_run.py script. This will pull the latest update and then run the display script. 
+	  ```
+      python ./empirestate/update_and_run.py
+      ```
+
+
 ## Troubleshooting
 ### If system update stalls reading changelogs, swap file may be too small.
 1. Before we can increase our Raspberry Pis swap file, we must first temporarily stop it.
