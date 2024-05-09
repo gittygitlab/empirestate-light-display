@@ -1,6 +1,7 @@
 import subprocess
 import logging
 import os
+from crontab import CronTab
 
 def install_python_packages():
     try:
@@ -35,26 +36,50 @@ def system_update():
     subprocess.run(["sudo", "apt", "upgrade", "-y"])
 
 def setup_cron_jobs():
-    from crontab import CronTab
-    
     cron = CronTab(user=True)
-    # Add a cron job to reboot the system at 3 am every Monday
-    reboot_job = cron.new(command='sudo reboot', comment='Reboot system at 3 am every Monday')
-    reboot_job.dow.on('MON')
-    reboot_job.hour.on(3)
-    reboot_job.minute.on(0)
     
-    # Add a cron job to run /home/administrator/empirestate/update_and_run.py at 4 am every morning
-    update_and_run_job = cron.new(command='python3 /home/administrator/empirestate/update_and_run.py', comment='Run update_and_run.py at 4 am every morning')
-    update_and_run_job.hour.on(4)
-    update_and_run_job.minute.on(0)
+    # Check if the reboot job already exists
+    reboot_job_exists = False
+    update_and_run_job_exists = False
+    check_website_job_exists = False
+    clear_screen_job_exists = False
     
-    # Add cron jobs to run /home/administrator/check_website.py every hour from 7 am to 11 pm every day
-    for hour in range(7, 24):
-        check_website_job = cron.new(command='python3 /home/administrator/check_website.py', comment=f'Run check_website.py every hour from 7am until 11pm')
-        check_website_job.hour.on(hour)
-        check_website_job.minute.on(0)
+    for job in cron:
+        if job.comment == 'Reboot system at 3 am every Monday':
+            reboot_job_exists = True
+        elif job.comment == 'Run update_and_run.py at 4 am every morning':
+            update_and_run_job_exists = True
+        elif job.comment == 'Run check_website.py every hour from 7am until 11pm':
+            check_website_job_exists = True
+        elif job.comment == 'Run clear_screen.py at 2 am every morning':
+            clear_screen_job_exists = True
     
+    # Add the reboot job if it doesn't exist
+    if not reboot_job_exists:
+        reboot_job = cron.new(command='sbin/reboot', comment='Reboot system at 3 am every Monday')
+        reboot_job.dow.on('1')
+        reboot_job.hour.on(3)
+        reboot_job.minute.on(0)
+    
+    # Add the update_and_run job if it doesn't exist
+    if not update_and_run_job_exists:
+        update_and_run_job = cron.new(command='python3 /home/administrator/empirestate/update_and_run.py', comment='Run update_and_run.py at 4 am every morning')
+        update_and_run_job.hour.on(4)
+        update_and_run_job.minute.on(0)
+    
+    # Add the check_website job if it doesn't exist
+    if not check_website_job_exists:
+        for hour in range(7, 24):
+            check_website_job = cron.new(command='python3 /home/administrator/check_website.py', comment=f'Run check_website.py every hour from 7am until 11pm')
+            check_website_job.hour.on(hour)
+            check_website_job.minute.on(0)
+    
+    # Add the clear_screen job if it doesn't exist
+    if not clear_screen_job_exists:
+        clear_screen_job = cron.new(command='python3 /home/administrator/empirestate/clear_screen.py', comment='Run clear_screen.py at 2 am every morning')
+        clear_screen_job.hour.on(2)
+        clear_screen_job.minute.on(0)
+
     cron.write()
 
 def setup_automatic_updates():
@@ -109,17 +134,6 @@ WantedBy=multi-user.target
     # Enable the service
     subprocess.run(["sudo", "systemctl", "enable", "bootup_splashscreen.service"])
 
-def setup_clear_screen_job():
-    from crontab import CronTab
-
-    cron = CronTab(user=True)
-    # Add a cron job to run /home/administrator/empirestate/clear_screen.py at 2 am every morning
-    clear_screen_job = cron.new(command='python3 /home/administrator/empirestate/clear_screen.py', comment='Run clear_screen.py at 2 am every morning')
-    clear_screen_job.hour.on(2)
-    clear_screen_job.minute.on(0)
-
-    cron.write()
-
 def setup_update_and_run_service():
     # Create the service unit file
     service_unit_content = """
@@ -157,7 +171,6 @@ def main():
     setup_automatic_updates()
     setup_shutdown_service()
     setup_bootup_service()  # Setup the bootup service
-    setup_clear_screen_job()  # Setup the clear screen job
     setup_update_and_run_service()  # Setup the update_and_run service
     
     # Create the event_details.json file and set permissions
