@@ -128,14 +128,13 @@ def setup_bootup_service():
     service_unit_content = """
 [Unit]
 Description=Run bootup_splashscreen.py on startup
-After=multi-user.target
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=/usr/bin/python3 /home/administrator/empirestate/bootup_splashscreen.py
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=basic.target
 """
     with open('/etc/systemd/system/bootup_splashscreen.service', 'w') as f:
         f.write(service_unit_content)
