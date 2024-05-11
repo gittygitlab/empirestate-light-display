@@ -152,7 +152,9 @@ After=network-online.target
 
 [Service]
 Type=simple
+ExecStartPre=/bin/sleep 10
 ExecStart=/usr/bin/python3 /home/administrator/empirestate/update_and_run.py
+After=bootup_splashscreen.service
 
 [Install]
 WantedBy=multi-user.target
