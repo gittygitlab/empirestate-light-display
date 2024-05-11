@@ -40,4 +40,4 @@ logging.info("Powering off the display")
 epd.sleep()
 
 # Wait for display to finish updating
-time.sleep(10)
+time.sleep(5)
