@@ -6,6 +6,9 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import subprocess
 
+# Print datetime for crontab logging
+print(datetime.now())
+
 # Set debug mode
 logging.basicConfig(level=logging.DEBUG)
 
