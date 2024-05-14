@@ -2,11 +2,9 @@ import logging
 from datetime import datetime
 from waveshare_epd import epd4in26
 
-print(datetime.now()) # Display datetime for crontab logging
-
 def clear_screen_and_power_off():
     # Set up logging
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
     try:
         # Initialize e-ink display
