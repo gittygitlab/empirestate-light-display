@@ -6,11 +6,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import subprocess
 
-# Print datetime for crontab logging
-print(datetime.now())
-
-# Set debug mode
-logging.basicConfig(level=logging.DEBUG)
+# Set up logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
 # Function to load event details from file
 def load_event_details(file_path="/home/administrator/empirestate/event_details.json"):
