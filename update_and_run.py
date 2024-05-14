@@ -2,7 +2,8 @@ import os
 import subprocess
 from datetime import datetime
 
-print(datetime.now()) # Display datetime for crontab logging
+# Set up logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
 # Define paths
 REPO_URL = "https://github.com/gittygitlab/empirestate-light-display.git"
