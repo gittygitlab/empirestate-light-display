@@ -79,7 +79,7 @@ def setup_cron_jobs():
     # Add the check_website job if it doesn't exist
     if not check_website_job_exists:
         for hour in range(7, 24):
-            check_website_job = cron.new(command='python3 /home/administrator/check_website.py', comment=f'Run check_website.py every hour from 7am until 11pm')
+            check_website_job = cron.new(command='python3 /home/administrator/empirestate/check_website.py', comment=f'Run check_website.py every hour from 7am until 11pm')
             check_website_job.hour.on(hour)
             check_website_job.minute.on(0)
     
