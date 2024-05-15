@@ -72,19 +72,19 @@ def setup_cron_jobs():
     
     # Add the update_and_run job if it doesn't exist
     if not update_and_run_job_exists:
-        update_and_run_job = cron.new(command='echo $(python3 /home/administrator/empirestate/update_and_run.py) >> /var/log/cron.log 2>&1', comment='Run update_and_run.py at 4 am every morning')
+        update_and_run_job = cron.new(command='python3 /home/administrator/empirestate/update_and_run.py >> /var/log/cron.log 2>&1', comment='Run update_and_run.py at 4 am every morning')
         update_and_run_job.hour.on(4)
         update_and_run_job.minute.on(0)
     
     # Add the check_website job if it doesn't exist
     if not check_website_job_exists:
-        check_website_job = cron.new(command='echo $(python3 /home/administrator/empirestate/check_website.py) >> /var/log/cron.log 2>&1', comment=f'Run check_website.py every hour from 7am until 11pm')
+        check_website_job = cron.new(command='python3 /home/administrator/empirestate/check_website.py >> /var/log/cron.log 2>&1', comment=f'Run check_website.py every hour from 7am until 11pm')
         check_website_job.hour.on(*range(7,24))
         check_website_job.minute.on(0)
     
     # Add the clear_screen job if it doesn't exist
     if not clear_screen_job_exists:
-        clear_screen_job = cron.new(command='echo $(python3 /home/administrator/empirestate/clear_screen.py) >> /var/log/cron.log 2>&1', comment='Run clear_screen.py at 2 am every morning')
+        clear_screen_job = cron.new(command='python3 /home/administrator/empirestate/clear_screen.py >> /var/log/cron.log 2>&1', comment='Run clear_screen.py at 2 am every morning')
         clear_screen_job.hour.on(2)
         clear_screen_job.minute.on(0)
 
