@@ -65,7 +65,7 @@ def setup_cron_jobs():
     
     # Add the reboot job if it doesn't exist
     if not reboot_job_exists:
-        reboot_job = cron.new(command='echo $(/sbin/reboot >> /var/log/cron.log 2>&1', comment='Reboot system at 3 am every Monday')
+        reboot_job = cron.new(command='/sbin/reboot', comment='Reboot system at 3 am every Monday')
         reboot_job.dow.on('1')
         reboot_job.hour.on(3)
         reboot_job.minute.on(0)
