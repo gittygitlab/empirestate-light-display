@@ -91,6 +91,10 @@ def setup_cron_jobs():
     cron.write()
 
 def setup_automatic_updates():
+    
+    # Change permissions for the file
+    subprocess.run(["sudo", "chmod", "666", "/etc/apt/apt.conf.d/50unattended-upgrades"])
+    
     subprocess.run(["sudo", "apt-get", "install", "unattended-upgrades", "-y"])
     with open('/etc/apt/apt.conf.d/50unattended-upgrades', 'a') as f:
         f.write('APT::Periodic::Update-Package-Lists "1";\n')
