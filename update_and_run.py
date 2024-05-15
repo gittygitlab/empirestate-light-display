@@ -15,6 +15,10 @@ def update_repo():
     try:
         logging.info("Updating repository...")
         os.chdir(LOCAL_REPO_PATH)  # Change current working directory to repository directory
+        
+        # Add safe.directory configuration for git
+        subprocess.run(["git", "config", "--global", "--add", "safe.directory", LOCAL_REPO_PATH])
+        
         if os.path.exists(".git"):
             # Use git command-line tool to reset local changes and pull updates
             subprocess.run(["git", "reset", "--hard", "HEAD"])  # Reset local changes
