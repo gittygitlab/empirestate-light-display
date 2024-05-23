@@ -260,7 +260,7 @@ try:
             draw.line((width - date_text_width - 30, underline_y, width - 30, underline_y), fill=0, width=2)
 
             # Draw "No events today" text below today's date
-            no_events_text = "No events today"
+            no_events_text = "Signature White"
             text_width, text_height = draw.textbbox((0, 0), no_events_text, font=font)[2:]
             draw.text((width - text_width - 30, underline_y + 10), no_events_text, font=font, fill=0)
 
