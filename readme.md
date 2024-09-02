@@ -55,7 +55,7 @@ The Empire State Light Display project retrieves information about the Empire St
 https://www.raspberrypi.com/documentation/services/connect.html
 
 
-### Configure Cron Log Rotation
+### Configure cron.log Rotation
 The current /etc/logrotate.conf file sets global settings for log rotation. However, the configuration you provided doesn’t specifically include a rule for rotating /var/log/cron.log. Here’s how you can set it up:
 
 1. Create a New Configuration File:
