@@ -50,6 +50,54 @@ The Empire State Light Display project retrieves information about the Empire St
       ```
 
 
+### Setup Remote Management
+- NOTE: rpi-connect is in beta. Please refer to the following link for the latest setup instuctions,
+https://www.raspberrypi.com/documentation/services/connect.html
+
+
+### Configure Cron Log Rotation
+The current /etc/logrotate.conf file sets global settings for log rotation. However, the configuration you provided doesn’t specifically include a rule for rotating /var/log/cron.log. Here’s how you can set it up:
+
+1. Create a New Configuration File:
+
+	You can create a new file specifically for the cron logs, for example /etc/logrotate.d/cron. This way, it won’t interfere with other log files.
+
+2. Edit the /etc/logrotate.d/cron File:
+
+	Add the following configuration to rotate the /var/log/cron.log file:
+
+		/var/log/cron.log {
+	   		weekly
+	   		rotate 4
+	   		create
+	   	 	missingok
+	   		notifempty
+	   	 	postrotate
+	        		/usr/bin/systemctl reload crond > /dev/null 2>&1 || true
+	    		endscript
+		}
+ 
+	weekly: Rotates the log weekly.
+
+	rotate 4: Keeps the last 4 rotated logs.
+
+	create: Creates a new empty log file after rotation with default permissions.
+
+	missingok: Ignores errors if the log file is missing.
+	
+ 	notifempty: Skips rotation if the log file is empty.
+	
+ 	postrotate: Reloads the cron service to apply changes after log rotation.
+
+
+2. Verify the Configuration:
+
+	Test the configuration by running:
+
+		sudo logrotate -d /etc/logrotate.conf
+ 	
+	This will display the logrotate actions without actually performing them, allowing you to check for errors.
+
 ## Troubleshooting
 ### If system update stalls reading changelogs, swap file may be too small.
 1. Before we can increase our Raspberry Pis swap file, we must first temporarily stop it.
