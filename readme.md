@@ -67,16 +67,16 @@ The current /etc/logrotate.conf file sets global settings for log rotation. Howe
 	Add the following configuration to rotate the /var/log/cron.log file:
 
 		/var/log/cron.log {
-	   		weekly
-	   		rotate 4
-	   		create
-	   	 	missingok
-	   		notifempty
-	   	 	postrotate
-	        		/usr/bin/systemctl reload crond > /dev/null 2>&1 || true
-	    		endscript
+			weekly
+			rotate 4
+			create
+			missingok
+			notifempty
+			postrotate
+				/usr/bin/systemctl reload crond > /dev/null 2>&1 || true
+			endscript
 		}
- 
+
 	weekly: Rotates the log weekly.
 
 	rotate 4: Keeps the last 4 rotated logs.
